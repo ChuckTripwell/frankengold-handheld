@@ -151,18 +151,6 @@ pacman -Sy --noconfirm --overwrite "*" --ask=4 $(curl -s "$BASE/$DATE/cachyos-ha
 
 RUN pacman -S --noconfirm --overwrite "*" --ask=4 steamos-manager steamos-powerbuttond jupiter-fan-control steamdeck-dsp cachyos-handheld mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon opencl-mesa lib32-opencl-mesa rocm-opencl-runtime
 
-## enable your services
-#
-RUN systemctl enable sddm
-RUN systemctl enable jupiter-fan-control
-RUN systemctl enable podman
-RUN systemctl enable bazzite-grub-boot-success.timer
-RUN systemctl enable bazzite-grub-boot-success.service
-RUN systemctl enable bazzite-autologin.service
-
-# add flatpaks
-RUN echo -e "[Flatpak Preinstall io.github.kolunmi.Bazaar]\nBranch=stable\nIsRuntime=false" > /usr/share/flatpak/preinstall.d/Bazaar.preinstall
-
 
 
 ###########_____________________________________________________________________________________________________________________________
@@ -201,10 +189,19 @@ RUN cd /tmp && git clone https://github.com/ublue-os/bazzite/ && \
     rm -r ./bazzite
 #_______________________________________________________________________________________________________________________________________
 
+## enable your services
+#
+RUN systemctl enable sddm
+RUN systemctl enable jupiter-fan-control
+RUN systemctl enable podman
+RUN systemctl enable bazzite-grub-boot-success.timer
+RUN systemctl enable bazzite-grub-boot-success.service
+RUN systemctl enable bazzite-autologin.service
 
 
 
-
+# add flatpaks
+RUN echo -e "[Flatpak Preinstall io.github.kolunmi.Bazaar]\nBranch=stable\nIsRuntime=false" > /usr/share/flatpak/preinstall.d/Bazaar.preinstall
 
 # Place logo at plymouth folder location to appear on boot and shutdown.
 #
