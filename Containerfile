@@ -154,6 +154,7 @@ RUN pacman -S --noconfirm --overwrite "*" --ask=4 steamos-manager steamos-powerb
 ## enable your services
 #
 RUN systemctl enable sddm
+RUN systemctl enable jupiter-fan-control
 RUN systemctl enable podman
 RUN systemctl enable bazzite-grub-boot-success.timer
 RUN systemctl enable bazzite-grub-boot-success.service
