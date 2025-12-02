@@ -138,22 +138,72 @@ net.ipv4.tcp_congestion_control=bbr' > /etc/sysctl.d/99-bbr3.conf
 ########################################################################################################################################
 
 # ONLY ADD ONE KERNEL!!!
-# adding more than one will break the build.
 #
-# note: only cachyos-based kernels are tested, but you can pretty much use any kernel you want.
-# adding kernel headers is also recommended.
-#
-RUN pacman -Sy --noconfirm linux-cachyos linux-cachyos-headers
+#RUN pacman -Sy --noconfirm linux-cachyos-deckify linux-cachyos-deckify-headers
 
-# install packages here! :)
-# available repos:
-# Archlinux default repo
-# CachyOS package repo
-# Chaotic-aur
 #
-# I added micro for you. go nuts:
+RUN bash -c 'BASE="https://build.cachyos.org/ISO/handheld"; \
+DATE=$(date +%y%m%d); \
+while ! curl --head --silent --fail "$BASE/$DATE/" >/dev/null 2>&1; do \
+  DATE=$(date -d "$DATE - 1 day" +%y%m%d); \
+done; \
+pacman -Sy --noconfirm --overwrite "*" --ask=4 $(curl -s "$BASE/$DATE/cachyos-handheld-linux-$DATE.pkgs.txt" | awk "{print \$1}" | grep -v firefox | grep -v calamares )'
+
+RUN pacman -S --noconfirm --overwrite "*" --ask=4 cachyos-handheld
+
+## enable your services
 #
-RUN pacman -S --noconfirm micro
+RUN systemctl enable sddm
+RUN systemctl enable podman
+RUN systemctl enable bazzite-grub-boot-success.timer
+RUN systemctl enable bazzite-grub-boot-success.service
+RUN systemctl enable bazzite-autologin.service
+
+# add flatpaks
+RUN echo -e "[Flatpak Preinstall io.github.kolunmi.Bazaar]\nBranch=stable\nIsRuntime=false" > /usr/share/flatpak/preinstall.d/Bazaar.preinstall
+
+
+
+###########_____________________________________________________________________________________________________________________________
+# bazzite scripts need grub2-editenv
+#
+RUN ln -s /usr/bin/grub-editenv /usr/bin/grub2-editenv
+#_______________________________________________________________________________________________________________________________________
+
+###########_____________________________________________________________________________________________________________________________
+# create a /boot/grub to use bazzite scripts
+#
+RUN mkdir -p /usr/lib/systemd/system
+RUN touch /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "[Unit]" > /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "Description=Create /boot/grub symlink if missing" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "ConditionPathExists=!/boot/grub" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "[Service]" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "Type=oneshot" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "ExecStart=/bin/ln -s /boot/grub2 /boot/grub" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "[Install]" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "WantedBy=multi-user.target" >> /usr/lib/systemd/system/fix-grub-link.service
+
+RUN systemctl enable /usr/lib/systemd/system/fix-grub-link.service
+#_______________________________________________________________________________________________________________________________________
+
+###########_____________________________________________________________________________________________________________________________
+# bazzite stuff (wer'e lazy)
+#
+RUN pacman --noconfirm -S rsync
+RUN cd /tmp && git clone https://github.com/ublue-os/bazzite/ && \
+    rsync -r ./bazzite/system_files/deck/kinoite/* / && \
+    rsync -r ./bazzite/system_files/deck/shared/* / && \
+    RUN chmod +x /usr/libexec/* && \
+    rm -r ./bazzite
+#_______________________________________________________________________________________________________________________________________
+
+
+
+
+
 
 # Place logo at plymouth folder location to appear on boot and shutdown.
 #
@@ -161,17 +211,6 @@ RUN mkdir -p /etc/plymouth && \
       echo -e '[Daemon]\nTheme=spinner' | tee /etc/plymouth/plymouthd.conf && \
       wget --tries=5 -O /usr/share/plymouth/themes/spinner/watermark.png \
 https://raw.githubusercontent.com/ChuckTripwell/cachyos-bootc-template/refs/heads/main/Text_Logo.png # this URL above leads to the logo shown on boot. you can use ours, or upload yours.
-
-
-## enable your services
-# example:
-#
-RUN systemctl enable podman
-
-# add flatpaks
-# example: Bazaar (very useful, do not remove!)
-#
-RUN echo -e "[Flatpak Preinstall io.github.kolunmi.Bazaar]\nBranch=stable\nIsRuntime=false" > /usr/share/flatpak/preinstall.d/Bazaar.preinstall
 
 
 ########################################################################################################################################
