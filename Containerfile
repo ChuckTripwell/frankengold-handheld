@@ -149,7 +149,7 @@ while ! curl --head --silent --fail "$BASE/$DATE/" >/dev/null 2>&1; do \
 done; \
 pacman -Sy --noconfirm --overwrite "*" --ask=4 $(curl -s "$BASE/$DATE/cachyos-handheld-linux-$DATE.pkgs.txt" | awk "{print \$1}" | grep -v firefox | grep -v calamares )'
 
-RUN pacman -S --noconfirm --overwrite "*" --ask=4 cachyos-handheld
+RUN pacman -S --noconfirm --overwrite "*" --ask=4 steamos-manager steamos-powerbuttond jupiter-fan-control steamdeck-dsp cachyos-handheld mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon opencl-mesa lib32-opencl-mesa rocm-opencl-runtime
 
 ## enable your services
 #
