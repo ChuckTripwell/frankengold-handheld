@@ -253,7 +253,13 @@ RUN rm -rf /home/build/.cache/* && \
     rm -rf \
         /tmp/* \
         /var/cache/pacman/pkg/* \
-        /var/lib/pacman/sync/*
+        /var/lib/pacman/sync/* \
+        /var/log/* \
+        /var/cache/* \
+        /var/log/* \
+        /var/db/* \
+        /var/lib/*
+
 
 # Necessary for general behavior expected by image-based systems
 RUN sed -i 's|^HOME=.*|HOME=/var/home|' "/etc/default/useradd" && \
