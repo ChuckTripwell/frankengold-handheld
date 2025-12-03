@@ -172,20 +172,14 @@ RUN pacman -Sy --noconfirm linux-cachyos-deckify linux-cachyos-deckify-headers
 #pacman -Sy --noconfirm --overwrite "*" --ask=4 $(curl -s "$BASE/$DATE/cachyos-handheld-linux-$DATE.pkgs.txt" | awk "{print \$1}" | grep -v firefox | grep -v cachyos-calamares-qt6-next-deckify | grep -v vim | grep -v vim-runtime | grep -v paru )'
 
 RUN pacman -S --noconfirm --overwrite "*" --ask=4 \
-steamos-manager \
-steamos-powerbuttond \
-jupiter-fan-control \
-steamdeck-dsp \
-cachyos-handheld
-
-RUN pacman -S --noconfirm amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa libva-intel-driver libva-mesa-driver \
+    steamos-manager steamos-powerbuttond jupiter-fan-control steamdeck-dsp cachyos-handheld \
+    amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa libva-intel-driver libva-mesa-driver \
     vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor xf86-video-amdgpu lib32-vulkan-radeon \
-    opencl-mesa lib32-opencl-mesa rocm-opencl-runtime
+    opencl-mesa lib32-opencl-mesa rocm-opencl-runtime \
+    plasma-desktop konsole plasma-nm plasma-pa sddm
 
 
 #RUN pacman -S --noconfirm chaotic-aur/all-repository-fonts
-
-RUN pacman -S --noconfirm plasma-desktop konsole plasma-nm plasma-pa sddm
 
 ###########_____________________________________________________________________________________________________________________________
 # bazzite scripts need grub2-editenv
