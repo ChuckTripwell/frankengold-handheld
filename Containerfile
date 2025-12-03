@@ -46,7 +46,7 @@ RUN pacman -Syy --noconfirm
 # install basic stuff
 RUN pacman -S --noconfirm base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow udev wget crun
 RUN pacman -S --noconfirm librsvg libglvnd qt6-multimedia-ffmpeg plymouth acpid ddcutil dmidecode mesa-utils ntfs-3g vulkan-tools wayland-utils playerctl curl cosign
-RUN pacman -S --noconfirm distrobox podman shim networkmanager firewalld flatpak gamescope scx-scheds scx-manager sudo bash bash-completion fastfetch unzip ptyxis
+RUN pacman -S --noconfirm distrobox podman shim networkmanager firewalld flatpak gamescope scx-scheds scx-manager sudo bash bash-completion fastfetch unzip
 
 RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
@@ -171,10 +171,17 @@ RUN pacman -Sy --noconfirm linux-cachyos-deckify linux-cachyos-deckify-headers
 #done; \
 #pacman -Sy --noconfirm --overwrite "*" --ask=4 $(curl -s "$BASE/$DATE/cachyos-handheld-linux-$DATE.pkgs.txt" | awk "{print \$1}" | grep -v firefox | grep -v cachyos-calamares-qt6-next-deckify | grep -v vim | grep -v vim-runtime | grep -v paru )'
 
-RUN pacman -S --noconfirm --overwrite "*" --ask=4 steamos-manager steamos-powerbuttond jupiter-fan-control steamdeck-dsp cachyos-handheld mesa lib32-mesa vulkan-radeon lib32-vulkan-radeon opencl-mesa lib32-opencl-mesa rocm-opencl-runtime
+RUN pacman -S --noconfirm --overwrite "*" --ask=4 \
+steamos-manager \
+steamos-powerbuttond \
+jupiter-fan-control \
+steamdeck-dsp \
+cachyos-handheld \
 
 RUN pacman -S --noconfirm amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa libva-intel-driver libva-mesa-driver \
-      vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor xf86-video-amdgpu lib32-vulkan-radeon 
+    vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor xf86-video-amdgpu lib32-vulkan-radeon \
+    opencl-mesa lib32-opencl-mesa rocm-opencl-runtime
+
 
 #RUN pacman -S --noconfirm chaotic-aur/all-repository-fonts
 
@@ -214,6 +221,7 @@ RUN git clone --depth 1 https://github.com/ublue-os/bazzite.git
 RUN rsync -a /tmp/bazzite/system_files/deck/kinoite/ /
 RUN rsync -a /tmp/bazzite/system_files/deck/shared/ /
 WORKDIR /
+RUN rm -rf /tmp/bazzite
 #_______________________________________________________________________________________________________________________________________
 
 
