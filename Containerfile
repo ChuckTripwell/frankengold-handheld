@@ -176,7 +176,7 @@ steamos-manager \
 steamos-powerbuttond \
 jupiter-fan-control \
 steamdeck-dsp \
-cachyos-handheld \
+cachyos-handheld
 
 RUN pacman -S --noconfirm amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa libva-intel-driver libva-mesa-driver \
     vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor xf86-video-amdgpu lib32-vulkan-radeon \
