@@ -178,6 +178,7 @@ RUN pacman -S --noconfirm amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa 
 
 RUN pacman -S --noconfirm chaotic-aur/all-repository-fonts
 
+RUN pacman -S --noconfirm plasma-meta konsole plasma-nm plasma-pa sddm
 
 ###########_____________________________________________________________________________________________________________________________
 # bazzite scripts need grub2-editenv
