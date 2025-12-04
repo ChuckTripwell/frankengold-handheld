@@ -22,7 +22,7 @@ COPY --from='rootfs' / /rootfs
 RUN curl https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/cachyos-mirrorlist/cachyos-mirrorlist -o /etc/pacman.d/cachyos-mirrorlist
 RUN pacman -Syy --needed --overwrite "*" --noconfirm cachyos-keyring cachyos-mirrorlist cachyos-v3-mirrorlist cachyos-v4-mirrorlist cachyos-hooks archlinux-keyring pacman-mirrorlist
 RUN pacman -Syy --noconfirm
-RUN pacman -S --noconfirm base base-devel
+RUN pacman -S --noconfirm base base-devel arch-install-scripts
 
 RUN pacstrap -c /rootfs/ base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils \
     dosfstools skopeo dbus dbus-glib glib2 shadow udev wget crun librsvg libglvnd qt6-multimedia-ffmpeg \
