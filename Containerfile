@@ -9,7 +9,12 @@
 
 FROM docker.io/cachyos/cachyos-v3:latest AS builder
 
-#RUN pacman -Syy --needed --overwrite "*" --noconfirm rsync
+
+# Move everything from `/var` to `/usr/lib/sysimage` so behavior around pacman remains the same on `bootc usroverlay`'d systems
+RUN grep "= */var" /etc/pacman.conf | sed "/= *\/var/s/.*=// ; s/ //" | xargs -n1 sh -c 'mkdir -p "/usr/lib/sysimage/$(dirname $(echo $1 | sed "s@/var/@@"))" && \
+mv -v "$1" "/usr/lib/sysimage/$(echo "$1" | sed "s@/var/@@")"' '' && \
+    sed -i -e "/= *\/var/ s/^#//" -e "s@= */var@= /usr/lib/sysimage@g" -e "/DownloadUser/d" /etc/pacman.conf
+
 
 RUN mkdir -p /rootfs
 #COPY --from="base" / /rootfs
@@ -19,7 +24,7 @@ RUN pacman -Sy --needed --overwrite "*" --noconfirm cachyos-keyring cachyos-mirr
 RUN pacman -Syy --noconfirm
 
 RUN pacman -Syy --overwrite="*" --noconfirm --ask=4 --root /rootfs/ base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils \
-    dosfstools skopeo dbus dbus-glib glib2 shadow udev wget crun librsvg libglvnd qt6-multimedia-ffmpeg \
+    dosfstools skopeo dbus dbus-glib glib2 shadow udev wget crun librsvg libglvnd qt6-multimedia-ffmpeg rsync \
     plymouth acpid ddcutil dmidecode mesa-utils ntfs-3g vulkan-tools wayland-utils playerctl curl cosign distrobox \
     podman shim networkmanager firewalld flatpak gamescope scx-scheds scx-manager sudo bash bash-completion \
     fastfetch unzip linux-cachyos-deckify linux-cachyos-deckify-headers steamos-manager steamos-powerbuttond \
@@ -40,12 +45,13 @@ FROM docker.io/cachyos/cachyos-v3:latest AS output
 
 ENV DRACUT_NO_XATTR=1
 
-COPY --from="builder" /rootfs /
-
 # Move everything from `/var` to `/usr/lib/sysimage` so behavior around pacman remains the same on `bootc usroverlay`'d systems
 RUN grep "= */var" /etc/pacman.conf | sed "/= *\/var/s/.*=// ; s/ //" | xargs -n1 sh -c 'mkdir -p "/usr/lib/sysimage/$(dirname $(echo $1 | sed "s@/var/@@"))" && \
 mv -v "$1" "/usr/lib/sysimage/$(echo "$1" | sed "s@/var/@@")"' '' && \
     sed -i -e "/= *\/var/ s/^#//" -e "s@= */var@= /usr/lib/sysimage@g" -e "/DownloadUser/d" /etc/pacman.conf
+
+
+COPY --from="builder" /rootfs /
 
 
 ###
