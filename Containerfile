@@ -7,12 +7,14 @@
 ##################################################################################
 ##################################################################################
 
+FROM docker.io/cachyos/cachyos-v3:latest AS base
+
 FROM docker.io/cachyos/cachyos-v3:latest AS builder
 
 RUN pacman -Syy --needed --overwrite "*" --noconfirm rsync
 
 RUN mkdir -p /rootfs
-RUN rsync -aHAX --exclude=/rootfs / /rootfs
+COPY --from="base" / /rootfs
 
 RUN curl https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/cachyos-mirrorlist/cachyos-mirrorlist -o /etc/pacman.d/cachyos-mirrorlist
 RUN pacman -Sy --needed --overwrite "*" --noconfirm cachyos-keyring cachyos-mirrorlist cachyos-v3-mirrorlist cachyos-v4-mirrorlist cachyos-hooks archlinux-keyring pacman-mirrorlist
@@ -36,13 +38,15 @@ RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.
 RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf
 RUN pacman -Syy --overwrite="*" --noconfirm --ask=4 --root /rootfs/ chaotic-aur/bootc
 
-RUN rm -rf /*!(rootfs)
+RUN docker image prune -a
 
 FROM scratch AS output
 
 ENV DRACUT_NO_XATTR=1
 
 COPY --from="builder" /rootfs /
+
+RUN docker image prune -a
 
 # Move everything from `/var` to `/usr/lib/sysimage` so behavior around pacman remains the same on `bootc usroverlay`'d systems
 RUN grep "= */var" /etc/pacman.conf | sed "/= *\/var/s/.*=// ; s/ //" | xargs -n1 sh -c 'mkdir -p "/usr/lib/sysimage/$(dirname $(echo $1 | sed "s@/var/@@"))" && \
