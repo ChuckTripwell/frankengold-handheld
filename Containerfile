@@ -17,11 +17,16 @@ mv -v "$1" "/usr/lib/sysimage/$(echo "$1" | sed "s@/var/@@")"' '' && \
 
 
 RUN mkdir -p /rootfs
-#COPY --from="base" / /rootfs
 
 RUN curl https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/cachyos-mirrorlist/cachyos-mirrorlist -o /etc/pacman.d/cachyos-mirrorlist
 RUN pacman -Sy --needed --overwrite "*" --noconfirm cachyos-keyring cachyos-mirrorlist cachyos-v3-mirrorlist cachyos-v4-mirrorlist cachyos-hooks archlinux-keyring pacman-mirrorlist
 RUN pacman -Syy --noconfirm
+
+RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
+RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' --noconfirm
+RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm
+RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf
 
 RUN pacman -Syy --overwrite="*" --noconfirm --ask=4 --root /rootfs/ base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils \
     dosfstools skopeo dbus dbus-glib glib2 shadow udev wget crun librsvg libglvnd qt6-multimedia-ffmpeg rsync \
@@ -32,14 +37,7 @@ RUN pacman -Syy --overwrite="*" --noconfirm --ask=4 --root /rootfs/ base dracut 
     libva-intel-driver libva-mesa-driver vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor \
     xf86-video-amdgpu lib32-vulkan-radeon \
     opencl-mesa lib32-opencl-mesa rocm-opencl-runtime \
-    plasma-desktop konsole plasma-nm plasma-pa sddm
-
-RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
-RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
-RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' --noconfirm
-RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm
-RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf
-RUN pacman -Syy --overwrite="*" --noconfirm --ask=4 --root /rootfs/ chaotic-aur/bootc
+    plasma-desktop konsole plasma-nm plasma-pa sddm chaotic-aur/bootc
 
 FROM docker.io/cachyos/cachyos-v3:latest AS output
 
@@ -49,9 +47,6 @@ ENV DRACUT_NO_XATTR=1
 RUN grep "= */var" /etc/pacman.conf | sed "/= *\/var/s/.*=// ; s/ //" | xargs -n1 sh -c 'mkdir -p "/usr/lib/sysimage/$(dirname $(echo $1 | sed "s@/var/@@"))" && \
 mv -v "$1" "/usr/lib/sysimage/$(echo "$1" | sed "s@/var/@@")"' '' && \
     sed -i -e "/= *\/var/ s/^#//" -e "s@= */var@= /usr/lib/sysimage@g" -e "/DownloadUser/d" /etc/pacman.conf
-
-
-COPY --from="builder" /rootfs /
 
 
 ###
@@ -78,17 +73,13 @@ RUN curl https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/cach
 RUN pacman -Syy --needed --overwrite "*" --noconfirm cachyos-keyring cachyos-mirrorlist cachyos-v3-mirrorlist cachyos-v4-mirrorlist cachyos-hooks archlinux-keyring pacman-mirrorlist
 RUN pacman -Syy --noconfirm
 
-# install basic stuff
-#RUN pacman -S --noconfirm base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow udev wget crun
-#RUN pacman -S --noconfirm librsvg libglvnd qt6-multimedia-ffmpeg plymouth acpid ddcutil dmidecode mesa-utils ntfs-3g vulkan-tools wayland-utils playerctl curl cosign
-#RUN pacman -S --noconfirm distrobox podman shim networkmanager firewalld flatpak gamescope scx-scheds scx-manager sudo bash bash-completion fastfetch unzip
 
-#RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
-#RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
-#RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' --noconfirm
-#RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm
-#RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf
-#RUN pacman -Sy --noconfirm chaotic-aur/bootc
+RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
+RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' --noconfirm
+RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm
+RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf
+RUN pacman -Sy --noconfirm chaotic-aur/bootc
 
 
 # add post-transaction flatpsks
@@ -121,6 +112,35 @@ RUN echo -e 'enable systemd-resolved.service' >> usr/lib/systemd/system-preset/9
 RUN echo -e 'L /etc/resolv.conf - - - - ../run/systemd/resolve/stub-resolv.conf' >> /usr/lib/tmpfiles.d/resolved-default.conf
 RUN systemctl preset systemd-resolved.service
 
+# brew setup 
+RUN curl -s https://api.github.com/repos/ublue-os/packages/releases/latest \
+    | jq -r '.assets[] | select(.name | test("homebrew-x86_64.*\\.tar\\.zst")) | .browser_download_url' \
+    | xargs -I {} wget -O /usr/share/homebrew.tar.zst {}
+
+RUN echo '[[ -d /home/linuxbrew/.linuxbrew && $- == *i* ]] && \
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' > /etc/profile.d/brew.sh
+
+RUN echo -e "[Unit]\n\
+Description=Setup Homebrew from tarball\n\
+After=local-fs.target\n\
+ConditionPathExists=!/var/home/linuxbrew/.linuxbrew\n\
+ConditionPathExists=/usr/share/homebrew.tar.zst\n\
+\n\
+[Service]\n\
+Type=oneshot\n\
+ExecStart=/usr/bin/mkdir -p /tmp/homebrew\n\
+ExecStart=/usr/bin/mkdir -p /var/home/linuxbrew\n\
+ExecStart=/usr/bin/tar --zstd -xf /usr/share/homebrew.tar.zst -C /tmp/homebrew\n\
+ExecStart=/usr/bin/cp -R -n /tmp/homebrew/linuxbrew/.linuxbrew /var/home/linuxbrew\n\
+ExecStart=/usr/bin/chown -R 1000:1000 /var/home/linuxbrew\n\
+ExecStart=/usr/bin/rm -rf /tmp/homebrew\n\
+ExecStart=/usr/bin/touch /etc/.linuxbrew\n\
+\n\
+[Install]\n\
+WantedBy=multi-user.target" > /usr/lib/systemd/system/brew-setup.service
+
+RUN systemctl enable brew-setup.service
+
 
 # This fixes a user/groups error with rebasing from other problematic images.
 # FIXME Do NOT remove until fixed upstream or fixed universally.
@@ -145,12 +165,20 @@ RUN echo -e "enable os-group-fix.service" > /usr/lib/systemd/system-preset/01-os
 # fix sudo
 RUN echo -e '%wheel ALL=(ALL:ALL) ALL'
 
+
 # System services (Machine Boot level)
 RUN systemctl enable polkit.service \
     NetworkManager.service \
     firewalld.service \
     flatpak-preinstall.service \
     os-group-fix.service
+
+# Activate NTSync
+RUN echo -e 'ntsync' > /etc/modules-load.d/ntsync.conf
+
+# CachyOS bbr3 Config Option
+RUN echo -e 'net.core.default_qdisc=fq \n\
+net.ipv4.tcp_congestion_control=bbr' > /etc/sysctl.d/99-bbr3.conf
 
 ########################################################################################################################################
 # Changes go here:
@@ -159,7 +187,7 @@ RUN systemctl enable polkit.service \
 
 # ONLY ADD ONE KERNEL!!!
 #
-#RUN pacman -Sy --noconfirm linux-cachyos-deckify linux-cachyos-deckify-headers
+RUN pacman -Sy --noconfirm linux-cachyos-deckify linux-cachyos-deckify-headers
 
 #
 #RUN bash -c 'BASE="https://build.cachyos.org/ISO/handheld"; \
@@ -168,6 +196,44 @@ RUN systemctl enable polkit.service \
 #  DATE=$(date -d "$DATE - 1 day" +%y%m%d); \
 #done; \
 #pacman -Sy --noconfirm --overwrite "*" --ask=4 $(curl -s "$BASE/$DATE/cachyos-handheld-linux-$DATE.pkgs.txt" | awk "{print \$1}" | grep -v firefox | grep -v cachyos-calamares-qt6-next-deckify | grep -v vim | grep -v vim-runtime | grep -v paru )'
+
+###########_____________________________________________________________________________________________________________________________
+# bazzite scripts need grub2-editenv
+#
+RUN ln -s /usr/bin/grub-editenv /usr/bin/grub2-editenv
+#_______________________________________________________________________________________________________________________________________
+
+###########_____________________________________________________________________________________________________________________________
+# create a /boot/grub to use bazzite scripts
+#
+RUN mkdir -p /usr/lib/systemd/system
+RUN touch /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "[Unit]" > /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "Description=Create /boot/grub symlink if missing" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "ConditionPathExists=!/boot/grub" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "[Service]" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "Type=oneshot" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "ExecStart=/bin/ln -s /boot/grub2 /boot/grub" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "[Install]" >> /usr/lib/systemd/system/fix-grub-link.service
+RUN echo "WantedBy=multi-user.target" >> /usr/lib/systemd/system/fix-grub-link.service
+
+RUN systemctl enable /usr/lib/systemd/system/fix-grub-link.service
+#_______________________________________________________________________________________________________________________________________
+
+
+###########_____________________________________________________________________________________________________________________________
+# services from bazzite
+WORKDIR /tmp
+RUN git clone --depth 1 https://github.com/ublue-os/bazzite.git
+RUN rsync -a /tmp/bazzite/system_files/deck/kinoite/ /
+RUN rsync -a /tmp/bazzite/system_files/deck/shared/ /
+WORKDIR /
+RUN rm -rf /tmp/bazzite
+#_______________________________________________________________________________________________________________________________________
+
+
 
 ## enable your services
 #
