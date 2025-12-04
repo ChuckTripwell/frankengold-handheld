@@ -7,11 +7,47 @@
 ##################################################################################
 ##################################################################################
 
+FROM docker.io/cachyos/cachyos-v3:latest AS rootfs
+
+FROM docker.io/cachyos/cachyos-v3:latest AS builder
+
+# Move everything from `/var` to `/usr/lib/sysimage` so behavior around pacman remains the same on `bootc usroverlay`'d systems
+RUN grep "= */var" /etc/pacman.conf | sed "/= *\/var/s/.*=// ; s/ //" | xargs -n1 sh -c 'mkdir -p "/usr/lib/sysimage/$(dirname $(echo $1 | sed "s@/var/@@"))" && \
+mv -v "$1" "/usr/lib/sysimage/$(echo "$1" | sed "s@/var/@@")"' '' && \
+    sed -i -e "/= *\/var/ s/^#//" -e "s@= */var@= /usr/lib/sysimage@g" -e "/DownloadUser/d" /etc/pacman.conf
+
+
+RUN mkdir -p /rootfs
+COPY --from='rootfs' / /rootfs
+RUN curl https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/cachyos-mirrorlist/cachyos-mirrorlist -o /etc/pacman.d/cachyos-mirrorlist
+RUN pacman -Syy --needed --overwrite "*" --noconfirm cachyos-keyring cachyos-mirrorlist cachyos-v3-mirrorlist cachyos-v4-mirrorlist cachyos-hooks archlinux-keyring pacman-mirrorlist
+RUN pacman -Syy --noconfirm
+pacman -S --noconfirm base base-devel
+
+RUN pacstrap -c /rootfs/ base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils \
+    dosfstools skopeo dbus dbus-glib glib2 shadow udev wget crun librsvg libglvnd qt6-multimedia-ffmpeg \
+    plymouth acpid ddcutil dmidecode mesa-utils ntfs-3g vulkan-tools wayland-utils playerctl curl cosig distrobox \
+    podman shim networkmanager firewalld flatpak gamescope scx-scheds scx-manager sudo bash bash-completion \
+    fastfetch unzip linux-cachyos-deckify linux-cachyos-deckify-headers steamos-manager steamos-powerbuttond \
+    jupiter-fan-control steamdeck-dsp cachyos-handheld amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa \
+    libva-intel-driver libva-mesa-driver vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor \
+    xf86-video-amdgpu lib32-vulkan-radeon \
+    opencl-mesa lib32-opencl-mesa rocm-opencl-runtime \
+    plasma-desktop konsole plasma-nm plasma-pa sddm
+
+RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
+RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' --noconfirm
+RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm
+RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf
+RUN pacstrap -c chaotic-aur/bootc
 
 
 FROM docker.io/cachyos/cachyos-v3:latest AS output
 
 ENV DRACUT_NO_XATTR=1
+
+COPY --from="builder" /rootfs /
 
 # Move everything from `/var` to `/usr/lib/sysimage` so behavior around pacman remains the same on `bootc usroverlay`'d systems
 RUN grep "= */var" /etc/pacman.conf | sed "/= *\/var/s/.*=// ; s/ //" | xargs -n1 sh -c 'mkdir -p "/usr/lib/sysimage/$(dirname $(echo $1 | sed "s@/var/@@"))" && \
@@ -44,16 +80,16 @@ RUN pacman -Syy --needed --overwrite "*" --noconfirm cachyos-keyring cachyos-mir
 RUN pacman -Syy --noconfirm
 
 # install basic stuff
-RUN pacman -S --noconfirm base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow udev wget crun
-RUN pacman -S --noconfirm librsvg libglvnd qt6-multimedia-ffmpeg plymouth acpid ddcutil dmidecode mesa-utils ntfs-3g vulkan-tools wayland-utils playerctl curl cosign
-RUN pacman -S --noconfirm distrobox podman shim networkmanager firewalld flatpak gamescope scx-scheds scx-manager sudo bash bash-completion fastfetch unzip
+#RUN pacman -S --noconfirm base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow udev wget crun
+#RUN pacman -S --noconfirm librsvg libglvnd qt6-multimedia-ffmpeg plymouth acpid ddcutil dmidecode mesa-utils ntfs-3g vulkan-tools wayland-utils playerctl curl cosign
+#RUN pacman -S --noconfirm distrobox podman shim networkmanager firewalld flatpak gamescope scx-scheds scx-manager sudo bash bash-completion fastfetch unzip
 
-RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
-RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
-RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' --noconfirm
-RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm
-RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf
-RUN pacman -Sy --noconfirm chaotic-aur/bootc
+#RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+#RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
+#RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' --noconfirm
+#RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm
+#RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf
+#RUN pacman -Sy --noconfirm chaotic-aur/bootc
 
 
 # add post-transaction flatpsks
@@ -161,7 +197,7 @@ net.ipv4.tcp_congestion_control=bbr' > /etc/sysctl.d/99-bbr3.conf
 
 # ONLY ADD ONE KERNEL!!!
 #
-RUN pacman -Sy --noconfirm linux-cachyos-deckify linux-cachyos-deckify-headers
+#RUN pacman -Sy --noconfirm linux-cachyos-deckify linux-cachyos-deckify-headers
 
 #
 #RUN bash -c 'BASE="https://build.cachyos.org/ISO/handheld"; \
@@ -171,12 +207,12 @@ RUN pacman -Sy --noconfirm linux-cachyos-deckify linux-cachyos-deckify-headers
 #done; \
 #pacman -Sy --noconfirm --overwrite "*" --ask=4 $(curl -s "$BASE/$DATE/cachyos-handheld-linux-$DATE.pkgs.txt" | awk "{print \$1}" | grep -v firefox | grep -v cachyos-calamares-qt6-next-deckify | grep -v vim | grep -v vim-runtime | grep -v paru )'
 
-RUN pacman -S --noconfirm --overwrite "*" --ask=4 \
-    steamos-manager steamos-powerbuttond jupiter-fan-control steamdeck-dsp cachyos-handheld \
-    amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa libva-intel-driver libva-mesa-driver \
-    vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor xf86-video-amdgpu lib32-vulkan-radeon \
-    opencl-mesa lib32-opencl-mesa rocm-opencl-runtime \
-    plasma-desktop konsole plasma-nm plasma-pa sddm
+#RUN pacman -S --noconfirm --overwrite "*" --ask=4 \
+#    steamos-manager steamos-powerbuttond jupiter-fan-control steamdeck-dsp cachyos-handheld \
+#    amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa libva-intel-driver libva-mesa-driver \
+#    vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor xf86-video-amdgpu lib32-vulkan-radeon \
+#    opencl-mesa lib32-opencl-mesa rocm-opencl-runtime \
+#    plasma-desktop konsole plasma-nm plasma-pa sddm
 
 
 #RUN pacman -S --noconfirm chaotic-aur/all-repository-fonts
