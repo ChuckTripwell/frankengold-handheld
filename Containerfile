@@ -39,7 +39,7 @@ RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
 RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' --noconfirm
 RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm
 RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf
-RUN pacstrap -c chaotic-aur/bootc
+RUN pacman -Syy --overwrite="*" --noconfirm --ask=4 --root /rootfs/ chaotic-aur/bootc
 
 
 FROM docker.io/cachyos/cachyos-v3:latest AS output
