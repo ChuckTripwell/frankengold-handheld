@@ -79,25 +79,25 @@ pacman -Syy --noconfirm  && \
 mkdir -p /usr/share/flatpak/preinstall.d/  && \  
 #
 # Systemd flatpak preinstall service  && \  
-echo -e '[Unit]  && \  
-Description=Preinstall Flatpaks  && \  
-After=network-online.target  && \  
-Wants=network-online.target  && \  
-ConditionPathExists=/usr/bin/flatpak  && \  
-Documentation=man:flatpak-preinstall(1)  && \  
-#
-[Service]  && \  
-Type=oneshot  && \  
-ExecStart=/usr/bin/flatpak preinstall -y  && \  
-RemainAfterExit=true  && \  
-Restart=on-failure  && \  
-RestartSec=30  && \  
-#
-StartLimitIntervalSec=600  && \  
-StartLimitBurst=3  && \  
-#
+echo -e '[Unit]
+Description=Preinstall Flatpaks
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/usr/bin/flatpak
+Documentation=man:flatpak-preinstall(1)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/flatpak preinstall -y
+RemainAfterExit=true
+Restart=on-failure
+RestartSec=30
+
+StartLimitIntervalSec=600
+StartLimitBurst=3
+
 [Install]  && \  
-WantedBy=multi-user.target' > /usr/lib/systemd/system/flatpak-preinstall.service  && \  
+WantedBy=multi-user.target' > /usr/lib/systemd/system/flatpak-preinstall.service && \
 #
 # Set up zram, this will help users not run out of memory.  && \  
 echo -e '[zram0]\nzram-size = min(ram, 8192)' >> /usr/lib/systemd/zram-generator.conf  && \  
@@ -113,23 +113,23 @@ curl -s https://api.github.com/repos/ublue-os/packages/releases/latest  && \
 echo '[[ -d /home/linuxbrew/.linuxbrew && $- == *i* ]]  && \  
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' > /etc/profile.d/brew.sh  && \  
 #
-echo -e "[Unit]  && \  
-Description=Setup Homebrew from tarball  && \  
-After=local-fs.target  && \  
-ConditionPathExists=!/var/home/linuxbrew/.linuxbrew  && \  
-ConditionPathExists=/usr/share/homebrew.tar.zst  && \  
-#
-[Service]  && \  
-Type=oneshot  && \  
-ExecStart=/usr/bin/mkdir -p /tmp/homebrew  && \  
-ExecStart=/usr/bin/mkdir -p /var/home/linuxbrew  && \  
-ExecStart=/usr/bin/tar --zstd -xf /usr/share/homebrew.tar.zst -C /tmp/homebrew  && \  
-ExecStart=/usr/bin/cp -R -n /tmp/homebrew/linuxbrew/.linuxbrew /var/home/linuxbrew  && \  
-ExecStart=/usr/bin/chown -R 1000:1000 /var/home/linuxbrew  && \  
-ExecStart=/usr/bin/rm -rf /tmp/homebrew  && \  
-ExecStart=/usr/bin/touch /etc/.linuxbrew  && \  
-#
-[Install]  && \  
+echo -e "[Unit]
+Description=Setup Homebrew from tarball
+After=local-fs.target
+ConditionPathExists=!/var/home/linuxbrew/.linuxbrew
+ConditionPathExists=/usr/share/homebrew.tar.zst
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/mkdir -p /tmp/homebrew
+ExecStart=/usr/bin/mkdir -p /var/home/linuxbrew
+ExecStart=/usr/bin/tar --zstd -xf /usr/share/homebrew.tar.zst -C /tmp/homebrew
+ExecStart=/usr/bin/cp -R -n /tmp/homebrew/linuxbrew/.linuxbrew /var/home/linuxbrew
+ExecStart=/usr/bin/chown -R 1000:1000 /var/home/linuxbrew
+ExecStart=/usr/bin/rm -rf /tmp/homebrew
+ExecStart=/usr/bin/touch /etc/.linuxbrew
+
+[Install]
 WantedBy=multi-user.target" > /usr/lib/systemd/system/brew-setup.service  && \  
 #
 systemctl enable brew-setup.service  && \  
@@ -140,17 +140,17 @@ mkdir -p /usr/lib/systemd/system-preset /usr/lib/systemd/system  && \
 #  
 echo -e '#!/bin/sh\ncat /usr/lib/sysusers.d/*.conf | grep -e "^g" | grep -v -e "^#" | awk "NF" | awk '\''{print $2}'\'' | grep -v -e "wheel" -e "root" -e "sudo" | xargs -I{} sed -i "/{}/d" $1' > /usr/libexec/os-group-fix  && \  
 chmod +x /usr/libexec/os-group-fix  && \  
-echo -e '[Unit]  && \  
-Description=Fix groups  && \  
-Wants=local-fs.target  && \  
-After=local-fs.target  && \  
-[Service]  && \  
-Type=oneshot  && \  
-ExecStart=/usr/libexec/os-group-fix /etc/group  && \  
-ExecStart=/usr/libexec/os-group-fix /etc/gshadow  && \  
-ExecStart=systemd-sysusers  && \  
-[Install]  && \  
-WantedBy=default.target multi-user.target' > /usr/lib/systemd/system/os-group-fix.service  && \  
+echo -e '[Unit]
+Description=Fix groups
+Wants=local-fs.target
+After=local-fs.target
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/os-group-fix /etc/group
+ExecStart=/usr/libexec/os-group-fix /etc/gshadow
+ExecStart=systemd-sysusers
+[Install]
+WantedBy=default.target multi-user.target' > /usr/lib/systemd/system/os-group-fix.service
 #
 echo -e "enable os-group-fix.service" > /usr/lib/systemd/system-preset/01-os-group-fix.preset  && \  
 #
@@ -167,8 +167,8 @@ os-group-fix.service  && \
 # Activate NTSync  && \  
 echo -e 'ntsync' > /etc/modules-load.d/ntsync.conf  && \  
 #
-# CachyOS bbr3 Config Option  && \  
-echo -e 'net.core.default_qdisc=fqn\  && \  
+# CachyOS bbr3 Config Option 
+echo -e 'net.core.default_qdisc=fqn
 net.ipv4.tcp_congestion_control=bbr' > /etc/sysctl.d/99-bbr3.conf  && \  
 #
 ########################################################################################################################################  && \  
@@ -267,15 +267,15 @@ yes | pacman -Scc  && \
 yes | paccache -ruk0  && \  
 #
 rm -rf /home/build/.cache/*  && \  
-rm -rf  && \  
-/tmp/*  && \  
-/var/cache/pacman/pkg/*  && \  
-/var/lib/pacman/sync/*  && \  
-/var/log/*  && \  
-/var/cache/*  && \  
-/var/log/*  && \  
-/var/db/*  && \  
-/var/lib/*  && \  
+rm -rf \  
+/tmp/* \  
+/var/cache/pacman/pkg/* \  
+/var/lib/pacman/sync/* \  
+/var/log/* \  
+/var/cache/*  \  
+/var/log/*  \  
+/var/db/*  \  
+/var/lib/* \  
 #
 # Necessary for general behavior expected by image-based systems  && \  
 sed -i 's|^HOME=.*|HOME=/var/home|' "/etc/default/useradd"  && \  
