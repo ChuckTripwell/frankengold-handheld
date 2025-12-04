@@ -49,6 +49,9 @@ mv -v "$1" "/usr/lib/sysimage/$(echo "$1" | sed "s@/var/@@")"' '' && \
     sed -i -e "/= *\/var/ s/^#//" -e "s@= */var@= /usr/lib/sysimage@g" -e "/DownloadUser/d" /etc/pacman.conf
 
 
+COPY --from="builder" /rootfs /
+
+
 ###
 
 # Create pacman hook to make it ephemeral
