@@ -27,16 +27,7 @@ RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar
 RUN pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm
 RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/pacman.conf
 
-RUN pacman -Syy --overwrite="*" --noconfirm --ask=4 base linux-cachyos-deckify linux-cachyos-deckify-headers jq dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils \
-    dosfstools skopeo dbus dbus-glib glib2 shadow udev wget crun librsvg libglvnd qt6-multimedia-ffmpeg rsync \
-    plymouth acpid ddcutil dmidecode mesa-utils ntfs-3g vulkan-tools wayland-utils playerctl curl cosign distrobox \
-    podman shim networkmanager firewalld gamescope scx-scheds scx-manager sudo bash bash-completion \
-    fastfetch unzip steamos-manager steamos-powerbuttond \
-    jupiter-fan-control steamdeck-dsp cachyos-handheld amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa \
-    libva-intel-driver libva-mesa-driver vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor \
-    xf86-video-amdgpu lib32-vulkan-radeon polkit \
-    opencl-mesa lib32-opencl-mesa rocm-opencl-runtime \
-    plasma-desktop konsole plasma-nm plasma-pa sddm chaotic-aur/bootc chaotic-aur/flatpak-git
+RUN pacman -Syy --overwrite="*" --noconfirm --ask=4 base linux-cachyos linux-cachyos-headers fastfetch micro dracut linux-firmware ostree chaotic-aur/bootc chaotic-aur/flatpak-git
 
 
 ########################################################################################################################################
