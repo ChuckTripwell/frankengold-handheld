@@ -88,7 +88,7 @@ RUN pacman -S --noconfirm steam gamescope scx-scheds scx-manager gnome-disk-util
 # more
 RUN pacman -S --noconfirm \
     just \
-    sddm plasma-desktop \
+    plasma-desktop \
     plasma-pa  \
     plasma-nm  \
     konsole  \
@@ -327,8 +327,13 @@ RUN systemctl enable polkit.service \
     firewalld.service \
     flatpak-preinstall.service \
     os-group-fix.service
-RUN systemctl enable sddm.service
-RUN systemctl enable podman
+
+
+#RUN pacman --noconfirm -S sddm
+#RUN systemctl enable sddm.service
+
+RUN pacman --noconfirm -S gdm
+RUN systemctl enable gdm.service
 
 
 # Activate NTSync.
