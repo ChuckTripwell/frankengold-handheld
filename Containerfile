@@ -23,7 +23,7 @@ When = PostTransaction\n\
 Exec = /usr/bin/rm -rf /var/cache/pacman/pkg" > /usr/share/libalpm/hooks/package-cleanup.hook
 
 # Initialize the database
-# force-refresh and add the chaotic-aur (where we get 'bootc' from)
+# force-refresh
 RUN curl https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/cachyos-mirrorlist/cachyos-mirrorlist -o /etc/pacman.d/cachyos-mirrorlist
 RUN pacman -Syy --needed --overwrite "*" --noconfirm cachyos-keyring cachyos-mirrorlist cachyos-v3-mirrorlist cachyos-v4-mirrorlist cachyos-hooks archlinux-keyring pacman-mirrorlist
 RUN pacman -Syyu --noconfirm --ask=4
@@ -88,7 +88,6 @@ RUN pacman -S --noconfirm steam gamescope scx-scheds scx-manager gnome-disk-util
 # more
 RUN pacman -S --noconfirm \
     just \
-    topgrade \
     sddm plasma-desktop \
     plasma-pa  \
     plasma-nm  \
@@ -116,6 +115,7 @@ RUN git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde
 
 
 ##############################################################################################################################################
+# add the chaotic-aur (where we get 'bootc' from)
 
 RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
@@ -127,25 +127,14 @@ RUN echo -e '[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist' >> /etc/
 RUN pacman -Sy --noconfirm
 
 RUN pacman -S --noconfirm \
+    chaotic-aur/bootc \
     chaotic-aur/flatpak-git \
     chaotic-aur/ttf-symbola \
     chaotic-aur/opentabletdriver \
     chaotic-aur/qt6ct-kde \
     chaotic-aur/adwaita-qt5-git \
     chaotic-aur/adwaita-qt6-git \
-    chaotic-aur/bootc
-
-RUN useradd -m -s /bin/bash aur && \
-    echo "aur ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/aur && \
-    mkdir -p /tmp_aur_build && chown -R aur /tmp_aur_build && \
-    pacman -S --noconfirm git base-devel; \
-    runuser -u aur -- env -C /tmp_aur_build git clone 'https://aur.archlinux.org/paru-bin.git' && \
-    runuser -u aur -- env -C /tmp_aur_build/paru-bin makepkg -si --noconfirm && \
-    rm -rf /tmp_aur_build && \
-    runuser -u aur -- paru -S --noconfirm uupd; \
-    userdel -rf aur; rm -rf /home/aur /etc/sudoers.d/aur \
-    cd / \
-    pacman -Rns --noconfirm git base-devel
+    chaotic-aur/topgrade
 
 #######################################################################################################################################################
 #######################################################################################################################################################
@@ -337,8 +326,8 @@ RUN systemctl enable polkit.service \
     tuned-ppd.service \
     firewalld.service \
     flatpak-preinstall.service \
-    os-group-fix.service \
-    uupd.timer
+    os-group-fix.service
+#RUN systemctl enable uupd.timer
 RUN systemctl enable sddm.service
 RUN systemctl enable podman
 
