@@ -134,7 +134,7 @@ RUN pacman -S --noconfirm \
 
 # get uupd
 WORKDIR /tmp
-RUN git clone https://github.com/ublue-os/uupd && cd ./uupd && just build && chmod +x ./output/uupd
+RUN git clone https://github.com/ublue-os/uupd && cd ./uupd && go build -o output/uupd && chmod +x ./output/uupd
 COPY /tmp/uupd/output/uupd /usr/bin/
 RUN rm -rf /tmp/uupd/
 WORKDIR /
