@@ -87,24 +87,26 @@ RUN pacman -S --noconfirm steam gamescope scx-scheds scx-manager gnome-disk-util
 
 # more
 RUN pacman -S --noconfirm \
-  sddm plasma-desktop \
-  plasma-pa  \
-  plasma-nm  \
-  konsole  \
-  micro  \
-  dolphin  \
-  cosign \
-  breeze
+    just \
+    topgrade \
+    sddm plasma-desktop \
+    plasma-pa  \
+    plasma-nm  \
+    konsole  \
+    micro  \
+    dolphin  \
+    cosign \
+    breeze
 
 RUN pacman -S --noconfirm \
-  crun \
-  ptyxis
+    crun \
+    ptyxis
 
 RUN pacman -S --noconfirm --overwrite "*" --ask=4 cachyos-handheld \
-  steamos-manager \
-  steamos-powerbuttond \
-  jupiter-fan-control \
-  steamdeck-dsp 
+    steamos-manager \
+    steamos-powerbuttond \
+    jupiter-fan-control \
+    steamdeck-dsp 
 
 
 ##############################################################################################################################################
