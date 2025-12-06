@@ -108,6 +108,8 @@ RUN pacman -S --noconfirm --overwrite "*" --ask=4 cachyos-handheld \
 
 
 ##############################################################################################################################################
+# themes:
+RUN git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde && chmod +x ./install.sh && ./install.sh
 ##############################################################################################################################################
 
 RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
