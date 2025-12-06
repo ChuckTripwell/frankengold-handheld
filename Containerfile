@@ -105,13 +105,15 @@ RUN pacman -S --noconfirm --overwrite "*" --ask=4 cachyos-handheld \
     steamos-manager \
     steamos-powerbuttond \
     jupiter-fan-control \
-    steamdeck-dsp 
-
+    steamdeck-dsp \
+    qt6-virtualkeyboard \
+    maliit-framework \
+    maliit-keyboard
 
 ##############################################################################################################################################
 
 # themes:
-#RUN git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde && chmod +x ./install.sh && ./install.sh
+RUN git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde && chmod +x ./install.sh && ./install.sh
 
 
 ##############################################################################################################################################
