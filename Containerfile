@@ -106,7 +106,9 @@ RUN pacman -S --noconfirm --overwrite "*" --ask=4 cachyos-handheld \
     steamos-powerbuttond \
     jupiter-fan-control \
     steamdeck-dsp \
-    qt6-virtualkeyboard
+    qt6-virtualkeyboard \
+    krunner-bazaar
+
 
 ##############################################################################################################################################
 
