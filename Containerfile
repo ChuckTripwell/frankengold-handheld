@@ -112,6 +112,10 @@ RUN pacman -S --noconfirm --overwrite "*" --ask=4 cachyos-handheld \
 ##############################################################################################################################################
 # themes:
 RUN git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde && chmod +x ./install.sh && ./install.sh
+
+# decky loader
+bash <(curl -sSL https://raw.githubusercontent.com/unlbslk/arch-deckify/refs/heads/main/setup_deckyloader.sh)
+
 ##############################################################################################################################################
 
 RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
@@ -133,10 +137,12 @@ RUN pacman -S --noconfirm \
     chaotic-aur/bootc
 
 # get uupd
+RUN pacman -S --noconfirm go
 WORKDIR /tmp
 RUN git clone https://github.com/ublue-os/uupd && cd ./uupd && go build -o output/uupd && chmod +x ./output/uupd
 COPY /tmp/uupd/output/uupd /usr/bin/
 RUN rm -rf /tmp/uupd/
+RUN pacman -Rns --noconfirm go
 WORKDIR /
 
 #######################################################################################################################################################
@@ -149,9 +155,6 @@ RUN echo -e "[Flatpak Preinstall io.github.kolunmi.Bazaar]\nBranch=stable\nIsRun
 
 # Elisa | Music player~
 RUN echo -e "[Flatpak Preinstall org.kde.elisa]\nBranch=stable\nIsRuntime=false" > /usr/share/flatpak/preinstall.d/Elisa.preinstall
-
-# Pinta | Image editing! They set out a bit to match paint.net/paintdotnet, it does okay at that.
-RUN echo -e "[Flatpak Preinstall com.github.PintaProject.Pinta]\nBranch=stable\nIsRuntime=false" > /usr/share/flatpak/preinstall.d/Pinta.preinstall
 
 # Ark | For unzipping files and file compression!
 RUN echo -e "[Flatpak Preinstall org.kde.ark]\nBranch=stable\nIsRuntime=false" > /usr/share/flatpak/preinstall.d/Ark.preinstall
