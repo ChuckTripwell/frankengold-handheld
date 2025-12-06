@@ -78,8 +78,8 @@ RUN pacman -S --noconfirm pipewire pipewire-pulse pipewire-zeroconf pipewire-ffa
     alsa-firmware lib32-pipewire pipewire-audio linux-firmware-intel
 
 # Desktop Environment needs
-#RUN pacman -S --noconfirm xwayland-satellite xdg-desktop-portal-kde xdg-desktop-portal xdg-user-dirs xdg-desktop-portal-gnome \
-#      ffmpegthumbs kdegraphics-thumbnailers kdenetwork-filesharing kio-admin chezmoi matugen accountsservice quickshell dgop cava \ 
+#RUN pacman -S --noconfirm xwayland-satellite xdg-desktop-portal-kde xdg-desktop-portal xdg-user-dirs \
+#      ffmpegthumbs kdegraphics-thumbnailers kdenetwork-filesharing kio-admin matugen accountsservice quickshell dgop cava \ 
 #      wlsunset ddcutil xdg-utils kservice5 archlinux-xdg-menu shared-mime-info kio glycin
 
 # User frontend programs/apps
@@ -135,8 +135,7 @@ RUN pacman -S --noconfirm \
     chaotic-aur/opentabletdriver \
     chaotic-aur/qt6ct-kde \
     chaotic-aur/adwaita-qt5-git \
-    chaotic-aur/adwaita-qt6-git \
-    chaotic-aur/topgrade
+    chaotic-aur/adwaita-qt6-git
 
 #######################################################################################################################################################
 #######################################################################################################################################################
@@ -329,7 +328,6 @@ RUN systemctl enable polkit.service \
     firewalld.service \
     flatpak-preinstall.service \
     os-group-fix.service
-#RUN systemctl enable uupd.timer
 RUN systemctl enable sddm.service
 RUN systemctl enable podman
 
@@ -360,6 +358,27 @@ RUN sed -i 's|^HOME=.*|HOME=/var/home|' "/etc/default/useradd" && \
     echo "$(for dir in opt home srv mnt usrlocal ; do echo "d /var/$dir 0755 root root -" ; done)" | tee -a "/usr/lib/tmpfiles.d/bootc-base-dirs.conf" && \
     printf "d /var/roothome 0700 root root -\nd /run/media 0755 root root -" | tee -a "/usr/lib/tmpfiles.d/bootc-base-dirs.conf" && \
     printf '[composefs]\nenabled = yes\n[sysroot]\nreadonly = true\n' | tee "/usr/lib/ostree/prepare-root.conf"
+
+
+###########_____________________________________________________________________________________________________________________________
+# Install aur packages
+#
+RUN pacman -S --noconfirm base-devel git sudo && \
+    useradd -m aur && echo "aur ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+USER aur
+WORKDIR /home/aur
+RUN git clone https://aur.archlinux.org/yay.git && \
+    cd yay && makepkg -si --noconfirm && \
+    yay -Sy --noconfirm uupd krunner-bazaar
+USER root
+RUN userdel -r aur || true && \
+    rm -rf /home/aur && \
+    rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/*
+RUN pacman -Rns base-devel
+
+RUN systemctl enable uupd.timer
+#_______________________________________________________________________________________________________________________________________
+
 
 
 ###########_____________________________________________________________________________________________________________________________
