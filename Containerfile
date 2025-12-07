@@ -85,18 +85,6 @@ RUN pacman -S --noconfirm pipewire pipewire-pulse pipewire-zeroconf pipewire-ffa
 # User frontend programs/apps
 RUN pacman -S --noconfirm steam gamescope scx-scheds scx-manager gnome-disk-utility mangohud lib32-mangohud
 
-# more
-RUN pacman -S --noconfirm \
-    just \
-    plasma-desktop \
-    plasma-pa  \
-    plasma-nm  \
-    konsole  \
-    micro  \
-    dolphin  \
-    cosign \
-    breeze
-
 RUN pacman -S --noconfirm \
     crun \
     ptyxis \
@@ -109,6 +97,53 @@ RUN pacman -S --noconfirm --overwrite "*" --ask=4 cachyos-handheld \
     steamdeck-dsp \
     qt6-virtualkeyboard
 
+RUN pacman -Sy --noconfirm --needed \
+    lib32-amdvlk \
+    lib32-glibc \
+    lib32-libva-intel-driver \
+    lib32-libva-mesa-driver \
+    lib32-libvdpau \
+    lib32-mangohud \
+    lib32-mesa-utils \
+    lib32-mesa \
+    lib32-vulkan-intel \
+    lib32-vulkan-mesa-layers \
+    lib32-vulkan-radeon \
+    lib32-vulkan-swrast \
+    libva-intel-driver \
+    libva-utils \
+    mesa-vdpau \
+    vulkan-swrast
+
+RUN pacman -Sy --noconfirm --needed \
+    boost-libs \
+    dmidecode \
+    dolphin \
+    fuse2 \
+    gamescope \
+    git \
+    gperftools \
+    jq \
+    kate \
+    konsole \
+    lib32-gamescope \
+    lib32-gcc-libs \
+    lib32-libpulse \
+    lib32-libunwind \
+    lib32-mesa \
+    lib32-opencl-mesa \
+    lib32-renderdoc-minimal \
+    mangohud \
+    noto-fonts-cjk \
+    plasma-desktop \
+    sddm \
+    steamdeck-kde-presets \
+    steam-jupiter-stable \
+    steamos-customizations \
+    unzip \
+    xdg-user-dirs \
+    xorg-xwayland \
+    zenity
 
 ##############################################################################################################################################
 
@@ -330,7 +365,7 @@ RUN systemctl enable polkit.service \
     os-group-fix.service
 
 
-RUN pacman --noconfirm -S sddm
+#RUN pacman --noconfirm -S sddm
 RUN systemctl enable sddm.service
 
 # Activate NTSync.
@@ -388,20 +423,20 @@ RUN systemctl enable /usr/lib/systemd/system/fix-grub-link.service
 
 ###########_____________________________________________________________________________________________________________________________
 # services from bazzite
-RUN pacman -S --noconfirm --needed rsync
-RUN cd /tmp && git clone --depth 1 https://github.com/ublue-os/bazzite.git && cd /
-RUN chmod +x /tmp/bazzite/system_files/deck/kinoite/usr/bin/*
-RUN chmod +x /tmp/bazzite/system_files/deck/shared/usr/bin/*
-RUN rsync -a /tmp/bazzite/system_files/deck/kinoite/ /
-RUN rsync -a /tmp/bazzite/system_files/deck/shared/ /
-RUN rm -rf /tmp/bazzite
+#RUN pacman -S --noconfirm --needed rsync
+#RUN cd /tmp && git clone --depth 1 https://github.com/ublue-os/bazzite.git && cd /
+#RUN chmod +x /tmp/bazzite/system_files/deck/kinoite/usr/bin/*
+#RUN chmod +x /tmp/bazzite/system_files/deck/shared/usr/bin/*
+#RUN rsync -a /tmp/bazzite/system_files/deck/kinoite/ /
+#RUN rsync -a /tmp/bazzite/system_files/deck/shared/ /
+#RUN rm -rf /tmp/bazzite
 #_______________________________________________________________________________________________________________________________________
 
 
 ###########_____________________________________________________________________________________________________________________________
 # activate services from bazzite
-RUN systemctl enable bazzite-grub-boot-success.timer
-RUN systemctl enable bazzite-grub-boot-success.service
+#RUN systemctl enable bazzite-grub-boot-success.timer
+#RUN systemctl enable bazzite-grub-boot-success.service
 #_______________________________________________________________________________________________________________________________________
 
 
