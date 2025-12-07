@@ -65,35 +65,6 @@ RUN pacman -S --noconfirm sudo bash bash-completion fastfetch btop jq less lsof 
 
 
 
-
-###########_____________________________________________________________________________________________________________________________
-# Install aur packages
-#
-RUN pacman -S --noconfirm base-devel git sudo && \
-    useradd -m aur && echo "aur ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-RUN pacman --noconfirm -S paru
-USER aur
-WORKDIR /home/aur
-RUN paru -Sy --noconfirm uupd krunner-bazaar
-RUN curl -sL https://raw.githubusercontent.com/GIAGAMGEMES/box.sh/refs/heads/main/box.sh update | bash -s add decky-loader-bin
-USER root
-RUN userdel -r aur || true && \
-    rm -rf /home/aur && \
-    rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/*
-RUN pacman --noconfirm -Rns base-devel paru
-
-RUN systemctl enable uupd.timer
-#_______________________________________________________________________________________________________________________________________
-
-
-
-
-
-
-
-
-
-
 # Virtualization \ Containerization
 RUN pacman -S --noconfirm distrobox docker podman
 
@@ -437,6 +408,27 @@ RUN rm -rf /tmp/bazzite
 RUN systemctl enable bazzite-grub-boot-success.timer
 RUN systemctl enable bazzite-grub-boot-success.service
 #_______________________________________________________________________________________________________________________________________
+
+
+###########_____________________________________________________________________________________________________________________________
+# Install aur packages
+#
+RUN pacman -S --noconfirm base-devel git sudo && \
+    useradd -m aur && echo "aur ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN pacman --noconfirm -S paru
+USER aur
+WORKDIR /home/aur
+RUN paru -Sy --noconfirm uupd krunner-bazaar
+RUN curl -sL https://raw.githubusercontent.com/GIAGAMGEMES/box.sh/refs/heads/main/box.sh update | bash -s add decky-loader-bin
+USER root
+RUN userdel -r aur || true && \
+    rm -rf /home/aur && \
+    rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/*
+RUN pacman --noconfirm -Rns base-devel paru
+
+RUN systemctl enable uupd.timer
+#_______________________________________________________________________________________________________________________________________
+
 
 # finish
 RUN bootc container lint
