@@ -97,7 +97,7 @@ RUN pacman -S --noconfirm --overwrite "*" --ask=4 cachyos-handheld \
     steamdeck-dsp \
     qt6-virtualkeyboard
 
-RUN pacman -Sy --noconfirm --needed \
+RUN pacman -Sy --noconfirm --needed --ask=4 \
     lib32-amdvlk \
     lib32-glibc \
     lib32-libva-intel-driver \
@@ -115,12 +115,9 @@ RUN pacman -Sy --noconfirm --needed \
     mesa-vdpau \
     vulkan-swrast
 
-RUN pacman -Sy --noconfirm --needed \
-    boost-libs \
+RUN pacman -Sy --noconfirm --needed --ask=4 \
     dmidecode \
     dolphin \
-    fuse2 \
-    gamescope \
     git \
     gperftools \
     jq \
