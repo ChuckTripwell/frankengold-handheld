@@ -22,8 +22,6 @@ Depends = coreutils\n\
 When = PostTransaction\n\
 Exec = /usr/bin/rm -rf /var/cache/pacman/pkg" > /usr/share/libalpm/hooks/package-cleanup.hook
 
-RUN curl -L https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/install_release.sh | sh
-
 # Initialize the database
 # force-refresh
 RUN curl https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/cachyos-mirrorlist/cachyos-mirrorlist -o /etc/pacman.d/cachyos-mirrorlist
@@ -64,6 +62,9 @@ RUN pacman -S --noconfirm noto-fonts noto-fonts-cjk noto-fonts-emoji unicode-emo
 # CLI Utilities
 RUN pacman -S --noconfirm sudo bash bash-completion fastfetch btop jq less lsof nano openssh powertop man-db wget yt-dlp \
       tree usbutils vim wl-clip-persist unzip glibc-locales tar udev starship tuned-ppd tuned curl patchelf
+
+
+RUN curl -L https://github.com/SteamDeckHomebrew/decky-installer/releases/latest/download/install_release.sh | sh
 
 
 # Virtualization \ Containerization
