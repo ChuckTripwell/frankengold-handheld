@@ -113,7 +113,7 @@ RUN pacman -S --noconfirm --overwrite "*" --ask=4 cachyos-handheld \
 ##############################################################################################################################################
 
 # themes:
-RUN git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde && chmod +x ./install.sh && ./install.sh
+RUNcd /tmp && git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde && chmod +x ./install.sh && ./install.sh
 
 
 ##############################################################################################################################################
@@ -389,11 +389,12 @@ RUN systemctl enable /usr/lib/systemd/system/fix-grub-link.service
 ###########_____________________________________________________________________________________________________________________________
 # services from bazzite
 RUN pacman -S --noconfirm --needed rsync 
-WORKDIR /tmp
-RUN git clone --depth 1 https://github.com/ublue-os/bazzite.git
+WORKDIR 
+RUN cd /tmp && git clone --depth 1 https://github.com/ublue-os/bazzite.git && cd /
+RUN chmod +x /tmp/bazzite/system_files/deck/kinoite/usr/bin/*
+RUN chmod +x /tmp/bazzite/system_files/deck/shared/usr/bin/*
 RUN rsync -a /tmp/bazzite/system_files/deck/kinoite/ /
 RUN rsync -a /tmp/bazzite/system_files/deck/shared/ /
-WORKDIR /
 RUN rm -rf /tmp/bazzite
 #_______________________________________________________________________________________________________________________________________
 
@@ -402,18 +403,6 @@ RUN rm -rf /tmp/bazzite
 # activate services from bazzite
 RUN systemctl enable bazzite-grub-boot-success.timer
 RUN systemctl enable bazzite-grub-boot-success.service
-#_______________________________________________________________________________________________________________________________________
-
-###########_____________________________________________________________________________________________________________________________
-# fix sddm permissions
-#
-RUN mkdir -p /var/lib/sddm && \
-    chown -R sddm:sddm /var/lib/sddm && \
-    chmod 700 /var/lib/sddm
-
-RUN touch /var/lib/sddm/state.conf && \
-    chown sddm:sddm /var/lib/sddm/state.conf && \
-    chmod 600 /var/lib/sddm/state.conf
 #_______________________________________________________________________________________________________________________________________
 
 
