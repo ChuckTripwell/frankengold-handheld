@@ -411,18 +411,18 @@ RUN systemctl enable bazzite-grub-boot-success.service
 ###########_____________________________________________________________________________________________________________________________
 # Install aur packages
 #
-RUN pacman -S --noconfirm base-devel git sudo go && \
+RUN pacman -S --noconfirm base-devel git sudo go chaotic-aur/paru && \
     useradd -m aur && echo "aur ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 USER aur
 WORKDIR /home/aur
-RUN curl -sL https://raw.githubusercontent.com/GIAGAMGEMES/box.sh/refs/heads/main/box.sh | bash -s add uupd
-RUN curl -sL https://raw.githubusercontent.com/GIAGAMGEMES/box.sh/refs/heads/main/box.sh | bash -s add krunner-bazaar
+RUN paru -Sy --noconfirm uupd
+RUN paru -Sy --noconfirm krunner-bazaar
 RUN curl -sL https://raw.githubusercontent.com/GIAGAMGEMES/box.sh/refs/heads/main/box.sh | bash -s add decky-loader-bin
 USER root
 RUN userdel -r aur || true && \
     rm -rf /home/aur && \
     rm -rf /var/cache/pacman/pkg/* /var/lib/pacman/sync/*
-RUN pacman --noconfirm -Rns base-devel
+RUN pacman --noconfirm -Rns base-devel paru
 
 RUN systemctl enable uupd.timer
 #_______________________________________________________________________________________________________________________________________
