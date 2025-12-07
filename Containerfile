@@ -442,6 +442,7 @@ RUN userdel -r build && \
         /tmp/* \
         /var/cache/pacman/pkg/*
 
+RUN pacman -Rns --noconfirm base-devel
 RUN systemctl enable uupd.timer
 #_______________________________________________________________________________________________________________________________________
 
