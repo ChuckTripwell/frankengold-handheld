@@ -58,11 +58,11 @@ pacman -Sy --needed --noconfirm --overwrite "*" --ask=4 $(curl -s "$BASE/$DATE/c
 RUN pacman -S --noconfirm --ask=4 base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow jq crun firewalld tuned tuned-ppd networkmanager polkit sudo
 
 
-RUN pacman -S --noconfirm --ask=4 podman docker distrobox fastfetch dolphin konsole gamescope steam cachyos-handheld scx-scheds scx-manager ptyxis
+RUN pacman -S --noconfirm --ask=4 podman docker distrobox fastfetch dolphin konsole gamescope steam scx-scheds scx-manager ptyxis
 
 RUN pacman Rns --noconfirm firefox calamares
 
-
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
 
 
 
