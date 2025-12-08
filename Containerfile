@@ -35,6 +35,11 @@ Depends = coreutils\n\
 When = PostTransaction\n\
 Exec = /usr/bin/rm -rf /var/cache/pacman/pkg" > /usr/share/libalpm/hooks/package-cleanup.hook
 
+# force refresh
+RUN curl https://raw.githubusercontent.com/CachyOS/CachyOS-PKGBUILDS/master/cachyos-mirrorlist/cachyos-mirrorlist -o /etc/pacman.d/cachyos-mirrorlist
+RUN pacman -Syy --needed --overwrite "*" --noconfirm cachyos-keyring cachyos-mirrorlist cachyos-v3-mirrorlist cachyos-v4-mirrorlist cachyos-hooks archlinux-keyring pacman-mirrorlist
+RUN pacman -Syy --noconfirm
+
 # Initialize the database
 RUN pacman -Syu --noconfirm
 
