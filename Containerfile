@@ -54,10 +54,16 @@ RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 plasma-desktop plasma
 
 #RUN pacman -Rns --noconfirm --ask=4 firefox cachyos-calamares-qt6-next-deckify cachyos-hello brltty
 
+#RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
+
+# Pipewire
+RUN pacman -S --noconfirm pipewire pipewire-pulse pipewire-zeroconf pipewire-ffado pipewire-libcamera sof-firmware wireplumber \
+    alsa-firmware lib32-pipewire pipewire-audio linux-firmware-intel
+
+# Network / VPN / SMB / storage
+RUN pacman -S --noconfirm libmtp nss-mdns samba smbclient networkmanager firewalld udiskie udisks2
+
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
-
-
-
 
 ##############################################################################################################################################
 # 
