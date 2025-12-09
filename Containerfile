@@ -1,7 +1,6 @@
 ##################################################################################
 ##################################################################################
-####                        this is just a template                            ###
-###   please go down to the "Changes go here" section to add your stuff!       ###
+####                        this is just an experiment                         ###
 ##################################################################################
 ###             a complete image will be published every week.                 ###
 ##################################################################################
@@ -44,23 +43,16 @@ RUN pacman -Syy --noconfirm
 RUN pacman -Syu --noconfirm
 
 # Use the Arch mirrorlist that will be best at the moment for both the containerfile and user too!
-RUN pacman -Sy --noconfirm reflector
-
-RUN bash -c 'BASE="https://build.cachyos.org/ISO/handheld"; \
-DATE=$(date +%y%m%d); \
-while ! curl --head --silent --fail "$BASE/$DATE/" >/dev/null 2>&1; do \
-  DATE=$(date -d "$DATE - 1 day" +%y%m%d); \
-done; \
-pacman -Sy --needed --noconfirm --overwrite "*" --ask=4 $(curl -s "$BASE/$DATE/cachyos-handheld-linux-$DATE.pkgs.txt" | awk "{print \$1}" )'
+#RUN pacman -Sy --noconfirm reflector
 
 
 # Base packages \ Linux Foundation \ Foss is love, foss is life! We split up packages by category for readability, debug ease, and less dependency trouble
 RUN pacman -S --noconfirm --ask=4 base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow jq crun firewalld tuned tuned-ppd networkmanager polkit sudo
 
 
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 podman docker distrobox fastfetch dolphin konsole gamescope steam scx-scheds scx-manager ptyxis
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 plasma-desktop plasma-pa plasma-nm networkmanager konsole podman docker distrobox fastfetch dolphin konsole gamescope steam scx-scheds scx-manager ptyxis
 
-RUN pacman -Rns --noconfirm --ask=4 firefox cachyos-calamares-qt6-next-deckify cachyos-hello brltty
+#RUN pacman -Rns --noconfirm --ask=4 firefox cachyos-calamares-qt6-next-deckify cachyos-hello brltty
 
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
 
@@ -127,11 +119,15 @@ RUN echo -e "[Flatpak Preinstall io.github.pieterdd.RcloneShuttle]\nBranch=stabl
 #
 ########################################################################################################################################
 
-# Place XeniaOS logo at plymouth folder location to appear on boot and shutdown.
-#RUN mkdir -p /etc/plymouth && \
-#      echo -e '[Daemon]\nTheme=spinner' | tee /etc/plymouth/plymouthd.conf && \
-#      wget --tries=5 -O /usr/share/plymouth/themes/spinner/watermark.png \
-#      https://raw.githubusercontent.com/XeniaMeraki/XeniaOS-G-Euphoria/refs/heads/main/xeniaos_textlogo_plymouth_delphic_melody.png
+# All kindsa Sudo changes for ease and flavor
+RUN echo -e '%wheel ALL=(ALL:ALL) ALL\n\
+\n\
+Defaults insults\n\
+Defaults pwfeedback\n\
+Defaults secure_path="/usr/local/bin:/usr/bin:/bin:/home/linuxbrew/.linuxbrew/bin"\n\
+Defaults env_keep += "EDITOR VISUAL PATH"\n\
+Defaults timestamp_timeout=0' > /etc/sudoers.d/xenias-sudo-quiver && \
+    chmod 440 /etc/sudoers.d/xenias-sudo-quiver
 
 # All kindsa Sudo changes for ease and flavor
 RUN echo -e '%wheel ALL=(ALL:ALL) ALL\n\
@@ -142,6 +138,7 @@ Defaults secure_path="/usr/local/bin:/usr/bin:/bin:/home/linuxbrew/.linuxbrew/bi
 Defaults env_keep += "EDITOR VISUAL PATH"\n\
 Defaults timestamp_timeout=0' > /etc/sudoers.d/xenias-sudo-quiver && \
     chmod 440 /etc/sudoers.d/xenias-sudo-quiver
+
 
 # Set up zram, this will help users not run out of memory. Fox will fix!
 RUN echo -e '[zram0]\nzram-size = min(ram, 8192)' >> /usr/lib/systemd/zram-generator.conf
