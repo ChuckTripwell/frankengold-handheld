@@ -49,12 +49,18 @@ RUN pacman -Sy --noconfirm reflector
 # Base packages \ Linux Foundation
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow jq crun firewalld tuned tuned-ppd networkmanager polkit sudo
 
-# Drivers
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa libva-intel-driver libva-mesa-driver \
-      vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor xf86-video-amdgpu lib32-vulkan-radeon 
 
-# Network / VPN / SMB / storage
-RUN pacman -S --noconfirm libmtp nss-mdns samba smbclient networkmanager firewalld udiskie udisks2
+# Media/Install utilities/Media drivers
+RUN pacman -S --noconfirm librsvg libglvnd qt6-multimedia-ffmpeg plymouth acpid ddcutil dmidecode mesa-utils ntfs-3g \
+      vulkan-tools wayland-utils playerctl
+
+
+# Virtualization \ Containerization
+RUN pacman -S --noconfirm distrobox docker podman
+
+
+# Desktop Environment needs
+RUN pacman -S --noconfirm xwayland-satellite io-admin kio matugen accountsservice quickshell brightnessctl xdg-utils
 
 
 # Others
