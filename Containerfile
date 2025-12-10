@@ -50,25 +50,13 @@ RUN pacman -Syu --noconfirm
 # Base packages \ Linux Foundation \ Foss is love, foss is life! We split up packages by category for readability, debug ease, and less dependency trouble
 RUN pacman -S --noconfirm --ask=4 base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow jq crun firewalld tuned tuned-ppd networkmanager polkit sudo
 
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 linux-cachyos-deckify linux-cachyos-deckify-headers amd-ucode intel-ucode 
-
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 $(curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt | awk '{print $1}')
-
-#RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 plasma-desktop plasma-pa plasma-nm networkmanager konsole dolphin
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 podman docker distrobox fastfetch gamescope steam scx-scheds scx-manager ptyxis
-
-#RUN pacman -Rns --noconfirm --ask=4 linux-zen
-
-#RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
 
 # Pipewire
-RUN pacman -S --noconfirm pipewire pipewire-pulse pipewire-zeroconf pipewire-ffado pipewire-libcamera sof-firmware wireplumber \
+#RUN pacman -S --noconfirm pipewire pipewire-pulse pipewire-zeroconf pipewire-ffado pipewire-libcamera sof-firmware wireplumber \
     alsa-firmware lib32-pipewire pipewire-audio linux-firmware-intel
 
 # Network / VPN / SMB / storage
-RUN pacman -S --noconfirm libmtp nss-mdns samba smbclient networkmanager firewalld udiskie udisks2
-
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
+#RUN pacman -S --noconfirm libmtp nss-mdns samba smbclient networkmanager firewalld udiskie udisks2
 
 ##############################################################################################################################################
 # 
@@ -89,6 +77,11 @@ RUN pacman -Sy --noconfirm
 RUN pacman -S --noconfirm \
     chaotic-aur/bootc chaotic-aur/flatpak-git
 
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 $(curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt | awk '{print $1}')
+RUN pacman -Rns --noconfirm --ask=4 linux-zen
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 linux-cachyos-deckify linux-cachyos-deckify-headers amd-ucode intel-ucode
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 podman docker distrobox fastfetch gamescope steam scx-scheds scx-manager ptyxis
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
 
 #######################################################################################################################################################
 # 
