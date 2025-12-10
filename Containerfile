@@ -82,7 +82,9 @@ RUN curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest
     | awk '{print $1}' \
     | grep -Ev '^(linux|linux-zen|linux-lts|mkinitcpio|grub|plymouth|nvidia|snapper|linux-zen-headers|grub-garuda|grub-theme-garuda)$' \
     > /tmp/pkglist
-RUN pacman -S --noconfirm --needed --overwrite="*" $(cat /tmp/pkglist)
+#RUN pacman -S --noconfirm --needed --overwrite="*" $(cat /tmp/pkglist)
+RUN set -x ; pacman -S --noconfirm --needed --overwrite="*" $(cat /tmp/pkglist) || (echo "PACMAN FAILED"; sleep 99999)
+
 
 RUN pacman -Rns --noconfirm --ask=4 linux-zen
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 linux-cachyos-deckify linux-cachyos-deckify-headers amd-ucode intel-ucode
