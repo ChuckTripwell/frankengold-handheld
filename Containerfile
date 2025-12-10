@@ -60,7 +60,7 @@ RUN pacman -S --noconfirm distrobox docker podman
 
 
 # Desktop Environment needs
-RUN pacman -S --noconfirm xwayland-satellite io-admin kio matugen accountsservice quickshell brightnessctl xdg-utils
+RUN pacman -S --noconfirm xwayland-satellite kio-admin kio matugen accountsservice quickshell brightnessctl xdg-utils
 
 
 # Others
