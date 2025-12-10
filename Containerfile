@@ -44,14 +44,21 @@ RUN pacman -Syy --noconfirm
 RUN pacman -Syu --noconfirm
 
 
-
-
 # Use the Arch mirrorlist that will be best at the moment for both the containerfile and user too!
 #RUN pacman -Sy --noconfirm reflector
 
 
 # Base packages \ Linux Foundation \ Foss is love, foss is life! We split up packages by category for readability, debug ease, and less dependency trouble
 RUN pacman -S --noconfirm --ask=4 base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow jq crun firewalld tuned tuned-ppd networkmanager polkit sudo
+
+
+RUN curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt \
+  | awk '{print $1}' \
+  | grep '^lib' \
+  | grep -Ev '^(linux|linux-zen|linux-lts|nvidia|snapper|linux-zen-headers|pipewire-support)$' \
+  > /tmp/pkglist
+RUN pacman -S --ask=4 --noconfirm --needed --overwrite="*" $(cat /tmp/pkglist)
+
 
 
 # Pipewire
