@@ -53,8 +53,8 @@ RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 linux-cachyos-deckify
 
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 $(curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt | awk '{print $1}')
 
-#RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 plasma-desktop plasma-pa plasma-nm networkmanager konsole
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 podman docker distrobox fastfetch dolphin gamescope steam scx-scheds scx-manager ptyxis
+#RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 plasma-desktop plasma-pa plasma-nm networkmanager konsole dolphin
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 podman docker distrobox fastfetch gamescope steam scx-scheds scx-manager ptyxis
 
 #RUN pacman -Rns --noconfirm --ask=4 linux-zen
 
