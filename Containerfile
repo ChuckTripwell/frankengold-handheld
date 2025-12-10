@@ -5,8 +5,8 @@
 ###             a complete image will be published every week.                 ### # #
 ################################################################################## # #
 ################################################################################## # #
- #                                                                                ## #
-  ###################################################################################
+ #                                                                                ###
+  ################################################################################ #
 
 
 FROM docker.io/cachyos/cachyos-v3:latest AS final
@@ -78,7 +78,7 @@ RUN pacman -S --noconfirm \
     chaotic-aur/bootc chaotic-aur/flatpak-git
 
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 $(curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt | awk '{print $1}')
-RUN pacman -Rns --noconfirm --ask=4 linux-zen
+RUN pacman -Rns --noconfirm --ask=4 linux-zen linux-zen-headers
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 linux-cachyos-deckify linux-cachyos-deckify-headers amd-ucode intel-ucode
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 podman docker distrobox fastfetch gamescope steam scx-scheds scx-manager ptyxis
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
