@@ -51,7 +51,7 @@ RUN pacman -S --noconfirm --ask=4 base dracut linux-firmware ostree systemd btrf
 
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 linux-cachyos-deckify linux-cachyos-deckify-headers amd-ucode intel-ucode 
 
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 $( curl -s https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt )
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 $(curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt | awk '{print $1}')
 
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 plasma-desktop plasma-pa plasma-nm networkmanager konsole podman docker distrobox fastfetch dolphin konsole gamescope steam scx-scheds scx-manager ptyxis
 
