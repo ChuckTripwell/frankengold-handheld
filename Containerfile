@@ -48,19 +48,6 @@ RUN pacman -Syu --noconfirm
 #RUN pacman -Sy --noconfirm reflector
 
 
-
-RUN curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt \
-  | awk '{print $1}' \
-  | grep '^lib' \
-  | grep -Ev '^(linux|linux-zen|linux-lts|nvidia|snapper|linux-zen-headers|pipewire-support)$' \
-  > /tmp/pkglist
-RUN yes '1' | pacman -S --noconfirm --needed --overwrite="*" $(cat /tmp/pkglist)
-
-
-
-
-
-
 # Base packages \ Linux Foundation \ Foss is love, foss is life! We split up packages by category for readability, debug ease, and less dependency trouble
 RUN pacman -S --noconfirm --ask=4 base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow jq crun firewalld tuned tuned-ppd networkmanager polkit sudo
 
@@ -91,6 +78,9 @@ RUN pacman -S --noconfirm \
 
 #RUN pacman -S --noconfirm --needed --overwrite="*" $(curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt | awk '{print $1}')
 
+
+RUN comm -12 <(pacman -Qq | sort) <(curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt | sort) \
+    | xargs -r pacman -Rdd --noconfirm
 
 RUN curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest.pkgs.txt \
   | awk '{print $1}' \
