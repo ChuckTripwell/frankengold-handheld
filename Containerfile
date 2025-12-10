@@ -49,17 +49,13 @@ RUN pacman -Sy --noconfirm reflector
 # Base packages \ Linux Foundation \ Foss is love, foss is life! We split up packages by category for readability, debug ease, and less dependency trouble
 RUN pacman -S --noconfirm --ask=4 base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow jq crun firewalld tuned tuned-ppd networkmanager polkit sudo
 
-# Pipewire
-#RUN pacman -S --noconfirm pipewire pipewire-pulse pipewire-zeroconf pipewire-ffado pipewire-libcamera sof-firmware wireplumber alsa-firmware lib32-pipewire pipewire-audio linux-firmware-intel
-
-# Network / VPN / SMB / storage
-#RUN pacman -S --noconfirm libmtp nss-mdns samba smbclient networkmanager firewalld udiskie udisks2
-
-
+# Drivers
+RUN pacman -S --noconfirm amd-ucode intel-ucode efibootmgr shim mesa lib32-mesa libva-intel-driver libva-mesa-driver \
+      vpl-gpu-rt vulkan-icd-loader vulkan-intel vulkan-radeon apparmor xf86-video-amdgpu lib32-vulkan-radeon 
 
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 plasma-meta
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 linux-cachyos-deckify linux-cachyos-deckify-headers
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 amd-ucode intel-ucode
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 amd-ucode intel-ucode noto-fonts-cjk apparmor
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 podman docker distrobox ptyxis fastfetch micro gamescope steam scx-scheds scx-manager
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
 
