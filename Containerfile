@@ -47,7 +47,7 @@ RUN pacman -Syu --noconfirm
 RUN pacman -Sy --noconfirm reflector
 
 # Base packages \ Linux Foundation
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 base dracut linux-firmware ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow jq crun firewalld tuned tuned-ppd networkmanager polkit sudo
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 base dracut ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow jq crun firewalld tuned tuned-ppd networkmanager polkit sudo
 
 
 # Fonts
