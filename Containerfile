@@ -63,7 +63,7 @@ RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 linux-cachyos-deckify
 #RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 amd-ucode intel-ucode
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 ptyxis fastfetch micro gamescope steam scx-scheds scx-manager
 RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cosign apparmor shim
-RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
+#RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
 
 # Virtualization \ Containerization
 RUN pacman -S --noconfirm distrobox docker podman
@@ -100,7 +100,7 @@ RUN pacman -Sy --noconfirm
 
 
 RUN pacman -Rdd --noconfirm flatpak || true
-RUN pacman -S --noconfirm \
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 \
     chaotic-aur/bootc chaotic-aur/flatpak-git chaotic-aur/opentabletdriver
 
 
@@ -112,6 +112,8 @@ RUN curl -L https://iso.builds.garudalinux.org/iso/latest/garuda/kde-lite/latest
   | grep -Ev '^(linux|linux-zen|linux-lts|nvidia|snapper|linux-zen-headers)$' \
   > /tmp/pkglist
 RUN pacman -S --ask=4 --noconfirm --needed --overwrite="*" $(cat /tmp/pkglist)
+
+RUN pacman -S --noconfirm --needed --overwrite="*" --ask=4 cachyos-handheld
 
 #######################################################################################################################################################
 # 
