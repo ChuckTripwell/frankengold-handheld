@@ -81,15 +81,8 @@ RUN mkdir -p /var/lib/sddm/.config && chown -R sddm:sddm /var/lib/sddm/.config
 
 
 ##############################################################################################################################################
-# add chaotic aur and also garuda repo
+# add chaotic aur
 ##############################################################################################################################################
-
-RUN wget https://aur.chaotic.cx/mirrorlist.txt -O /etc/pacman.d/chaotic-mirrorlist && \
-    wget https://aur.chaotic.cx/chaotic-keyring.pkg.tar.zst -O /tmp/chaotic-keyring.pkg.tar.zst && \
-    pacman -U /tmp/chaotic-keyring.pkg.tar.zst --noconfirm && \
-    curl -fsSL https://archlinux.org/mirrors/status/json/ | jq -r '.urls[] | select(.protocols | index("https")) | "Server = \(.url)/$repo/$arch"' > /etc/pacman.d/mirrorlist && \
-    printf "\n[garuda]\nInclude = /etc/pacman.d/mirrorlist\n\n[garuda-extra]\nInclude = /etc/pacman.d/mirrorlist\n" >> /etc/pacman.conf
-
 
 RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
