@@ -2,17 +2,8 @@ FROM ghcr.io/ublue-os/bazzite-deck:latest AS bazzite
 FROM docker.io/cachyos/cachyos-v3:latest AS cachyos
 
 RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 linux-cachyos-deckify
-RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 cachyos-handheld
-RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 plasma-meta
-
-COPY --from="bazzite" /bin /
-COPY --from="bazzite" /bin /
-COPY --from="bazzite" /sbin /
-COPY --from="bazzite" /usr/bin /
-COPY --from="bazzite" /usr/sbin /
-COPY --from="bazzite" /lib /
-COPY --from="bazzite" /lib64 /
-COPY --from="bazzite" /opt /
+#RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 cachyos-handheld
+#RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 plasma-meta
 
 # Move everything from `/var` to `/usr/lib/sysimage` so behavior around pacman remains the same on `bootc usroverlay`'d systems
 RUN grep "= */var" /etc/pacman.conf | sed "/= *\/var/s/.*=// ; s/ //" | xargs -n1 sh -c 'mkdir -p "/usr/lib/sysimage/$(dirname $(echo $1 | sed "s@/var/@@"))" && mv -v "$1" "/usr/lib/sysimage/$(echo "$1" | sed "s@/var/@@")"' '' && \
@@ -43,5 +34,14 @@ RUN sed -i 's|^HOME=.*|HOME=/var/home|' "/etc/default/useradd" && \
 # Setup a temporary root passwd (changeme) for dev purposes
 # RUN pacman -S whois --noconfirm
 # RUN usermod -p "$(echo "changeme" | mkpasswd -s)" root
+
+COPY --from="bazzite" /bin /
+COPY --from="bazzite" /bin /
+COPY --from="bazzite" /sbin /
+COPY --from="bazzite" /usr/bin /
+COPY --from="bazzite" /usr/sbin /
+COPY --from="bazzite" /lib /
+COPY --from="bazzite" /lib64 /
+COPY --from="bazzite" /opt /
 
 RUN bootc container lint
