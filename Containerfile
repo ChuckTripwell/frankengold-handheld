@@ -25,7 +25,7 @@ RUN mkdir /usr/lib/sysimage/lib/pacmanlocal -p
 RUN pacman -Sy --noconfirm base dracut ostree btrfs-progs e2fsprogs xfsprogs dosfstools skopeo dbus dbus-glib glib2 ostree shadow && pacman -S --clean --noconfirm
 
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 linux-cachyos-deckify
-RUN pacman -S --noconfirm --overwrite="*" --ask=4 plasma-meta
+RUN pacman -S --noconfirm --overwrite="*" --ask=4 plasma-meta sddm
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 cachyos-handheld
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 fastfetch sudo
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 podman podman-compose
