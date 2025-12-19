@@ -61,7 +61,7 @@ RUN pacman -S --noconfirm noto-fonts noto-fonts-cjk noto-fonts-emoji unicode-emo
 RUN pacman -S --noconfirm distrobox docker podman
 
 # Network / VPN / SMB / storage
-#RUN pacman -S --noconfirm libmtp nss-mdns samba smbclient networkmanager firewalld udiskie udisks2
+RUN pacman -S --noconfirm libmtp nss-mdns samba smbclient networkmanager firewalld udiskie udisks2
 
 # User frontend programs/apps
 RUN pacman -S --noconfirm scx-scheds scx-manager gnome-disk-utility
@@ -283,9 +283,8 @@ RUN systemctl enable polkit.service \
     tuned.service \
     tuned-ppd.service \
     firewalld.service \
-    greetd.service \
     flatpak-preinstall.service \
-    os-group-fix.service \
+    os-group-fix.service
 
 ########################################################################################################################################
 # Section 8 - CachyOS settings | Since we have the CachyOS kernel, we gotta put it to good use ≽^•⩊•^≼ ################################
