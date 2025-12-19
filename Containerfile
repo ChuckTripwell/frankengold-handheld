@@ -27,7 +27,8 @@ RUN pacman -Sy --noconfirm base dracut ostree btrfs-progs e2fsprogs xfsprogs dos
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 linux-cachyos-deckify
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 plasma-meta
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 cachyos-handheld
-
+RUN pacman -S --noconfirm --overwrite="*" --ask=4 fastfetch sudo
+RUN pacman -S --noconfirm --overwrite="*" --ask=4 podman podman-compose
 
 # Chaotic AUR repo
 RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
@@ -71,10 +72,9 @@ RUN sed -i 's|^HOME=.*|HOME=/var/home|' "/etc/default/useradd" && \
     printf "d /var/roothome 0700 root root -\nd /run/media 0755 root root -" | tee -a "/usr/lib/tmpfiles.d/bootc-base-dirs.conf" && \
     printf '[composefs]\nenabled = yes\n[sysroot]\nreadonly = true\n' | tee "/usr/lib/ostree/prepare-root.conf"
 
-RUN bootc container lint
 
-
-
+RUN systemctl enable sddm
+RUN systemctl enable podman
 
 #COPY --from="bazzite" /bin /
 #COPY --from="bazzite" /bin /
