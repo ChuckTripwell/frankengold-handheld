@@ -1,9 +1,9 @@
-#FROM ghcr.io/linuxserver/steamos:latest as steamos
-#FROM docker.io/cachyos/cachyos-v3:latest AS cachyos
+FROM ghcr.io/linuxserver/steamos:latest as steamos
+FROM docker.io/cachyos/cachyos-v3:latest AS cachyos
 
 FROM scratch AS builder
-COPY --from=ghcr.io/linuxserver/steamos:latest /* /
-COPY --from=docker.io/cachyos/cachyos-v3:latest /* /
+COPY --from=steamos /* /
+COPY --from=cachyos /* /
 
 RUN rm -rf /lib/modules/*
 
