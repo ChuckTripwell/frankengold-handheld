@@ -7,7 +7,11 @@ FROM docker.io/cachyos/cachyos-v3:latest AS cachyos
 
 #RUN rm -rf /lib/modules/*
 
-RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 linux-cachyos-deckify cachyos-handheld plasma-meta
+
+RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 linux-cachyos-deckify
+RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 cachyos-handheld
+RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 plasma-meta
+
 #RUN pacman -Qqn | sudo pacman -S --needed -
 
 #FROM scratch AS final
