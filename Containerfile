@@ -1,4 +1,4 @@
-FROM ghcr.io/ublue-os/bazzite-deck:latest AS bazzite
+#FROM ghcr.io/ublue-os/bazzite-deck:latest AS bazzite
 FROM docker.io/cachyos/cachyos-v3:latest AS cachyos
 
 # Move everything from `/var` to `/usr/lib/sysimage` so behavior around pacman remains the same on `bootc usroverlay`'d systems
@@ -25,8 +25,9 @@ RUN mkdir /usr/lib/sysimage/lib/pacmanlocal -p
 RUN pacman -Sy --noconfirm base dracut ostree btrfs-progs e2fsprogs xfsprogs dosfstools skopeo dbus dbus-glib glib2 ostree shadow && pacman -S --clean --noconfirm
 
 RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 linux-cachyos-deckify
-#RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 cachyos-handheld
-#RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 plasma-meta
+RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 plasma-meta
+RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 cachyos-handheld
+
 
 # Chaotic AUR repo
 RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
@@ -75,13 +76,13 @@ RUN bootc container lint
 
 
 
-COPY --from="bazzite" /bin /
-COPY --from="bazzite" /bin /
-COPY --from="bazzite" /sbin /
-COPY --from="bazzite" /usr/bin /
-COPY --from="bazzite" /usr/sbin /
-COPY --from="bazzite" /lib /
-COPY --from="bazzite" /lib64 /
-COPY --from="bazzite" /opt /
+#COPY --from="bazzite" /bin /
+#COPY --from="bazzite" /bin /
+#COPY --from="bazzite" /sbin /
+#COPY --from="bazzite" /usr/bin /
+#COPY --from="bazzite" /usr/sbin /
+#COPY --from="bazzite" /lib /
+#COPY --from="bazzite" /lib64 /
+#COPY --from="bazzite" /opt /
 
 RUN bootc container lint
