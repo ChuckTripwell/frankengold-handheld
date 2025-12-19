@@ -24,9 +24,9 @@ RUN mkdir /usr/lib/sysimage/lib/pacmanlocal -p
 
 RUN pacman -Sy --noconfirm base dracut ostree btrfs-progs e2fsprogs xfsprogs dosfstools skopeo dbus dbus-glib glib2 ostree shadow && pacman -S --clean --noconfirm
 
-RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 linux-cachyos-deckify
-RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 plasma-meta
-RUN pacman -Sy --noconfirm --overwrite="*" --ask=4 cachyos-handheld
+RUN pacman -S --noconfirm --overwrite="*" --ask=4 linux-cachyos-deckify
+RUN pacman -S --noconfirm --overwrite="*" --ask=4 plasma-meta
+RUN pacman -S --noconfirm --overwrite="*" --ask=4 cachyos-handheld
 
 
 # Chaotic AUR repo
@@ -42,12 +42,12 @@ RUN echo -e '[bootc]\nSigLevel = Required\nServer=https://github.com/hecknt/arch
 
 RUN pacman -Sy --noconfirm
 
-RUN pacman -S --noconfirm \
+RUN pacman -S --noconfirm --overwrite="*" --ask=4 \
     chaotic-aur/flatpak-git \
     chaotic-aur/opentabletdriver \
     chaotic-aur/bootc
 
-RUN pacman -S --noconfirm \
+RUN pacman -S --noconfirm --overwrite="*" --ask=4 \
   bootc/uupd && \
   systemctl enable uupd.timer
 
