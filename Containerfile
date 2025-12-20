@@ -2,17 +2,6 @@ FROM docker.io/cachyos/cachyos-v3:latest AS final
 
 ENV DRACUT_NO_XATTR=1
 
-# ✩₊˚.⋆☾𓃦☽⋆⁺₊✧ Index
-# Section 1 - Package Installs
-# Section 2 - Package List
-# Section 3 - Chaotic AUR / AUR
-# Section 4 - Flatpaks preinstalls
-# Section 5 - Linux OS Stuffs
-# Section 6 - Set up Brew
-# Section 7 - Systemd n Services
-# Section 8 - CachyOS Settings
-# Section 9 - Niri/Chezmoi/DMS
-# Section 10 - Final Bootc Setup
 
 ########################################################################################################################################
 # Section 1 - Package Installs | We grab every package we can from official arch repo/set up all non-flatpak apps for user ^^ ##########
@@ -99,6 +88,9 @@ RUN pacman -S --noconfirm --overwrite="*" --ask=4 cachyos-handheld
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 sudo
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 fastfetch
 #RUN pacman -S --noconfirm --overwrite="*" --ask=4 podman-compose
+RUN pacman -S --noconfirm --overwrite="*" --ask=4 tuned tuned-ppd
+
+
 
 #######################################################################################################################################################
 # Section 4 - Flatpaks preinstalls | Don't forget. Always, somewhere, someone is fighting for you. You are not alone. -Madoka Magica ##################
