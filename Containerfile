@@ -38,9 +38,9 @@ RUN pacman -S --noconfirm reflector
 RUN pacman -S --noconfirm base linux-firmware dracut ostree systemd btrfs-progs e2fsprogs xfsprogs binutils dosfstools skopeo dbus dbus-glib glib2 shadow
 
 # Fonts
-RUN pacman -S --noconfirm noto-fonts noto-fonts-cjk noto-fonts-emoji unicode-emoji noto-fonts-extra \
-    ttf-ibm-plex otf-font-awesome ttf-jetbrains-mono wqy-microhei ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-common \
-    ttf-nerd-fonts-symbols-mono ttf-croscore ttf-dejavu ttf-droid gsfonts ttf-arphic-uming ttf-baekmuk gnu-free-fonts otf-monaspace
+#RUN pacman -S --noconfirm noto-fonts noto-fonts-cjk noto-fonts-emoji unicode-emoji noto-fonts-extra \
+#    ttf-ibm-plex otf-font-awesome ttf-jetbrains-mono wqy-microhei ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-common \
+#    ttf-nerd-fonts-symbols-mono ttf-croscore ttf-dejavu ttf-droid gsfonts ttf-arphic-uming ttf-baekmuk gnu-free-fonts otf-monaspace
 
 # CLI Utilities
 #RUN pacman -S --noconfirm sudo bash bash-completion fastfetch btop jq less lsof nano openssh powertop man-db wget yt-dlp \
@@ -50,7 +50,7 @@ RUN pacman -S --noconfirm noto-fonts noto-fonts-cjk noto-fonts-emoji unicode-emo
 RUN pacman -S --noconfirm distrobox docker podman
 
 # Network / VPN / SMB / storage
-RUN pacman -S --noconfirm libmtp nss-mdns samba smbclient networkmanager firewalld udiskie udisks2
+#RUN pacman -S --noconfirm libmtp nss-mdns samba smbclient networkmanager firewalld udiskie udisks2
 
 # User frontend programs/apps
 RUN pacman -S --noconfirm scx-scheds scx-manager gnome-disk-utility
@@ -82,8 +82,11 @@ RUN pacman -S --noconfirm \
   systemctl enable uupd.timer
 
 
+RUN cd /tmp && wget https://gitlab.com/edgedev1/steamos-edge/-/raw/main/mkedge/packages.x86_64.base && pacman -U --noconfirm --ask=4 --overwrite="*" $(cat /tmp/packages.x86_64.base)
+RUN pacman --noconfirm -Rns linux | true
+
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 linux-cachyos-deckify
-RUN pacman -S --noconfirm --overwrite="*" --ask=4 plasma-meta sddm
+#RUN pacman -S --noconfirm --overwrite="*" --ask=4 plasma-meta sddm
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 cachyos-handheld
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 sudo
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 fastfetch
