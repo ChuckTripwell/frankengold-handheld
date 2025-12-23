@@ -82,7 +82,7 @@ RUN pacman -S --noconfirm \
   systemctl enable uupd.timer
 
 
-#RUN pacman -S --noconfirm --overwrite="*" --ask=4 \
+RUN pacman -S --noconfirm --overwrite="*" --ask=4 \
 a52dec \
 aalib \
 abseil-cpp \
