@@ -756,8 +756,6 @@ md4c \
 mdadm \
 media-player-info \
 meld \
-mesa \
-mesa-utils \
 micro \
 milou \
 minizip \
@@ -821,7 +819,6 @@ opus \
 orc \
 os-prober \
 p11-kit \
-pacman \
 pacman-contrib \
 pacman-mirrorlist \
 pacutils \
@@ -1151,7 +1148,6 @@ vlc-plugins-visualization \
 vmaf \
 volume_key \
 vulkan-icd-loader \
-vulkan-mesa-device-select \
 vulkan-tools \
 vulkan-virtio \
 wayland \
