@@ -39,8 +39,8 @@ COPY --from=docker.io/cachyos/cachyos-v3:latest /usr/sbin /os/usr/sbin
 COPY --from=docker.io/cachyos/cachyos-v3:latest /etc/os-release /os/etc/os-release
 COPY --from=docker.io/cachyos/cachyos-v3:latest /etc/environment > /os/etc/environment
 
-RUN pacman -Syy --noconfirm 
-RUN pacman -Suu --noconfirm
+RUN pacman -Syy --root /os/ --noconfirm 
+RUN pacman -Suu --root /os/ --noconfirm
 
 # fonts
 #COPY --from=ghcr.io/xeniameraki/xeniaos:latest /usr/share/fonts /os/usr/share/fonts
