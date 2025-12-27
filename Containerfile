@@ -3,10 +3,6 @@ ENV DRACUT_NO_XATTR=1
 
 #COPY --from=docker.io/cachyos/cachyos-v3:latest / /
 
-# fonts
-COPY --from=ghcr.io/ublue-os/bazzite-deck:latest /usr/share/fonts /usr/share/fonts
-COPY --from=ghcr.io/ublue-os/bazzite-deck:latest /usr/share/licenses /usr/share/licenses
-
 # Chaotic AUR repo
 RUN pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
 RUN pacman-key --init && pacman-key --lsign-key 3056513887B78AEB
@@ -38,6 +34,13 @@ RUN systemctl enable sddm
 # kernel
 RUN pacman -S --noconfirm --overwrite="*" --ask=4 \
     linux-cachyos-deckify
+
+
+# fonts
+COPY --from=ghcr.io/ublue-os/bazzite-deck:latest /usr/share/fonts /usr/share/fonts
+COPY --from=ghcr.io/ublue-os/bazzite-deck:latest /usr/share/licenses /usr/share/licenses
+
+
 
 
 RUN printf "systemdsystemconfdir=/etc/systemd/system\nsystemdsystemunitdir=/usr/lib/systemd/system\n" | tee /usr/lib/dracut/dracut.conf.d/30-bootcrew-fix-bootc-module.conf && \
