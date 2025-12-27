@@ -10,6 +10,6 @@ RUN pacman -Sy --noconfirm $KERNEL_NAME
 FROM ghcr.io/ublue-os/bazzite-deck:stable
 
 RUN rm -rf /lib/modules/*
-COPY --from="cachyos" /lib/modules/* /lib/modules/
+COPY --from="cachyos" /lib/modules /lib/modules
 
 RUN bootc container lint
