@@ -1,11 +1,11 @@
 FROM docker.io/cachyos/cachyos-v3:latest AS builder
-
+ENV DRACUT_NO_XATTR=1
 
 #COPY --from=docker.io/cachyos/cachyos-v3:latest / /
 
 # fonts
-COPY --from=ghcr.io/xeniameraki/xeniaos:latest /usr/share/fonts /usr/share/fonts
-COPY --from=ghcr.io/xeniameraki/xeniaos:latest /usr/share/licenses /usr/share/licenses
+COPY --from=ghcr.io/ublue-os/bazzite-deck:latest /usr/share/fonts /usr/share/fonts
+COPY --from=ghcr.io/ublue-os/bazzite-deck:latest /usr/share/licenses /usr/share/licenses
 
 RUN pacman-key --recv-key 5DE6BF3EBC86402E7A5C5D241FA48C960F9604CB --keyserver keyserver.ubuntu.com
 RUN pacman-key --lsign-key 5DE6BF3EBC86402E7A5C5D241FA48C960F9604CB
