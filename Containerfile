@@ -16,6 +16,7 @@ COPY --from=cachyos /lib/modules /lib/modules
 COPY --from=cachyos /lib /LIB_TMP
 RUN cp -r /lib /LIB_TMP
 RUN cp -r /LIB_TMP /lib
+RUN rm -rf /LIB_TMP
 
 
 
