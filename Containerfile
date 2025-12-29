@@ -6,17 +6,13 @@ RUN pacman -Sy --noconfirm linux-cachyos-deckify
 
 
 
-FROM ghcr.io/ublue-os/bazzite-deck:stable
+FROM ghcr.io/ublue-os/bazzite-deck-nvidia:testing
 ENV DRACUT_NO_XATTR=1
 
 
 RUN mkdir -p /LIB_TMP
 RUN rm -rf /lib/modules
 COPY --from=cachyos /lib/modules /lib/modules
-COPY --from=cachyos /lib /LIB_TMP
-RUN cp -r /lib /LIB_TMP
-RUN cp -r /LIB_TMP /lib
-RUN rm -rf /LIB_TMP
 
 
 
