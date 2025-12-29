@@ -1,13 +1,12 @@
 FROM scratch AS OS
 ENV DRACUT_NO_XATTR=1
 
-COPY --from=docker.io/cachyos/cachyos-v3:latest / /OS
-COPY --from=ghcr.io/ublue-os/bazzite-deck:stable / /OS
-
-RUN rm -rf /OS/lib/modules/*
+COPY --from=docker.io/cachyos/cachyos-v3:latest / /
+COPY --from=ghcr.io/ublue-os/bazzite-deck:stable / /
+RUN rm -rf /lib/modules/*
 
 FROM scratch AS final
-COPY --from=OS /OS/ /
+COPY --from=OS / /
 RUN pacman -Sy --noconfirm linux-cachyos-deckify
 
 RUN printf "systemdsystemconfdir=/etc/systemd/system\nsystemdsystemunitdir=/usr/lib/systemd/system\n" | tee /usr/lib/dracut/dracut.conf.d/30-bootcrew-fix-bootc-module.conf && \
