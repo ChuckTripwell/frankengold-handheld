@@ -14,8 +14,8 @@ RUN mkdir -p /LIB_TMP
 RUN rm -rf /lib/modules
 COPY --from=cachyos /lib/modules /lib/modules
 COPY --from=cachyos /lib /LIB_TMP
-COPY /lib /LIB_TMP
-COPY COPY /LIB_TMP /lib
+RUN cp -r /lib /LIB_TMP
+RUN cp -r /LIB_TMP /lib
 
 
 
