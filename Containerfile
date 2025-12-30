@@ -4,13 +4,19 @@ RUN pacman -Sy --noconfirm linux-cachyos-deckify
 
 FROM ghcr.io/ublue-os/bazzite-deck:latest
 RUN rm -rf /lib/modules
-RUN dnf5 -y copr enable bieszczaders/kernel-cachyos
-RUN dnf5 -y install --allowerasing kernel-cachyos
-RUN rm -rf /lib/modules
-
 COPY --from=cachyos /lib/modules /lib/modules
 COPY --from=cachyos /usr/share/licenses/ /usr/share/licenses/
 
+# fix audio?
+RUN echo '#!/usr/bin/env bash
+
+rm -rf ~/.config/pipewire
+rm -rf ~/.config/wireplumber
+rm -rf ~/.local/state/wireplumber
+rm -rf ~/.config/pulse
+
+systemctl --user daemon-reexec
+systemctl --user restart pipewire pipewire-pulse wireplumber'
 
 ENV DRACUT_NO_XATTR=1
 RUN mkdir -p /var/tmp
