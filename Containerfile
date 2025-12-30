@@ -2,14 +2,14 @@ FROM docker.io/cachyos/cachyos-v3:latest AS cachyos
 RUN rm -rf /lib/modules/*
 RUN pacman -Sy --noconfirm linux-cachyos-deckify
 
-
 FROM ghcr.io/ublue-os/bazzite-deck:latest
-#RUN rm -rf /lib/modules
+RUN rm -rf /lib/modules
+RUN dnf5 -y copr enable bieszczaders/kernel-cachyos
+RUN dnf5 -y install --allowerasing kernel-cachyos
+RUN rm -rf /lib/modules
 
-RUN mkdir -p /tmp/kernel && mv /lib/modules/*/kernel /tmp/kernel/ && mv /lib/modules/*/* /tmp/kernel/
-COPY --from=cachyos /lib/modules/*/* /tmp/kernel/
-RUN rm -rf /lib/modules/*
-RUN mv /tmp/kernel /lib/modules/
+COPY --from=cachyos /lib/modules /lib/modules
+COPY --from=cachyos /usr/share/licenses/ /usr/share/licenses/
 
 
 ENV DRACUT_NO_XATTR=1
