@@ -11,6 +11,8 @@ COPY --from=cachyos /usr/share/licenses/ /usr/share/licenses/
 
 COPY --from=cachyos /lib /lib
 COPY --from=cachyos /lib64 /lib64
+COPY --from=cachyos /usr/lib /usr/lib
+COPY --from=cachyos /usr/lib64 /usr/lib64
 
 #RUN 
 
