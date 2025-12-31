@@ -5,26 +5,23 @@ RUN pacman -S --noconfirm linux-cachyos-deckify
 
 
 FROM ghcr.io/ublue-os/bazzite-deck:latest
-RUN rm -rf /lib/modules
-COPY --from=cachyos /lib/modules /lib/modules
-COPY --from=cachyos /usr/share/licenses/ /usr/share/licenses/
 
 #
-# noaudio fix
+# audio fix
 #
 # Create the service directly
-RUN echo '[Unit]
-Description=Run alsactl init at first login after boot - to fix no audio glitch
-After=default.target
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/alsactl init"
-RemainAfterExit=yes
-
-[Install]
-WantedBy=default.target' > /etc/systemd/system/alsactl-init.service
-
+RUN echo '[Unit]' > /etc/systemd/system/alsactl-init.service
+RUN echo 'Description=Run alsactl init at first login after boot - to fix no audio glitch' > /etc/systemd/system/alsactl-init.service
+RUN echo 'After=default.target' > /etc/systemd/system/alsactl-init.service
+RUN echo '' > /etc/systemd/system/alsactl-init.service
+RUN echo '[Service]' > /etc/systemd/system/alsactl-init.service
+RUN echo 'Type=oneshot' > /etc/systemd/system/alsactl-init.service
+RUN echo 'ExecStart=/usr/bin/alsactl init' > /etc/systemd/system/alsactl-init.service
+RUN echo 'RemainAfterExit=yes' > /etc/systemd/system/alsactl-init.service
+RUN echo '' > /etc/systemd/system/alsactl-init.service
+RUN echo '[Install]' > /etc/systemd/system/alsactl-init.service
+RUN echo 'WantedBy=default.target' > /etc/systemd/system/alsactl-init.service
+#
 # Enable the service
 RUN systemctl enable alsactl-init.service
 
@@ -32,6 +29,10 @@ RUN systemctl enable alsactl-init.service
 #
 # disable countme
 RUN sed -i -e s,countme=1,countme=0, /etc/yum.repos.d/*.repo && systemctl mask --now rpm-ostree-countme.timer
+
+RUN rm -rf /lib/modules
+COPY --from=cachyos /lib/modules /lib/modules
+COPY --from=cachyos /usr/share/licenses/ /usr/share/licenses/
 
 # finish
 ENV DRACUT_NO_XATTR=1
