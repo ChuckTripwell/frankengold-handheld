@@ -9,13 +9,8 @@ RUN rm -rf /lib/modules
 COPY --from=cachyos /lib/modules /lib/modules
 COPY --from=cachyos /usr/share/licenses/ /usr/share/licenses/
 
-COPY --from=cachyos /lib /lib
-COPY --from=cachyos /lib64 /lib64
-COPY --from=cachyos /usr/lib /usr/lib
-COPY --from=cachyos /usr/lib64 /usr/lib64
-
-#RUN 
-
+# noaudio fix?
+RUN alsactl init
 
 ENV DRACUT_NO_XATTR=1
 RUN mkdir -p /var/tmp
