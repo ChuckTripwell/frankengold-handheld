@@ -13,20 +13,18 @@ COPY --from=cachyos /usr/share/licenses/ /usr/share/licenses/
 # noaudio fix
 #
 # Create the systemd service
-RUN cat <<'EOF' > /etc/systemd/system/alsactl-init.service
-[Unit]
-Description=Initialize ALSA
-After=multi-user.target
-
-[Service]
-Type=oneshot
-ExecStart=/usr/sbin/alsactl init
-RemainAfterExit=yes
-User=root
-
-[Install]
-WantedBy=multi-user.target
-EOF
+RUN printf "[Unit]\n\
+Description=Initialize ALSA\n\
+After=multi-user.target\n\
+\n\
+[Service]\n\
+Type=oneshot\n\
+ExecStart=/usr/sbin/alsactl init\n\
+RemainAfterExit=yes\n\
+User=root\n\
+\n\
+[Install]\n\
+WantedBy=multi-user.target\n" > /etc/systemd/system/alsactl-init.service
 
 # Enable the service
 RUN systemctl enable alsactl-init.service
