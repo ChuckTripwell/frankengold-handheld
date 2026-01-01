@@ -23,8 +23,16 @@ StartLimitIntervalSec=60\n\
 User=root\n\n\
 [Install]\n\
 WantedBy=multi-user.target\n" > /etc/systemd/system/alsactl-watch.service
-
+# enable service
 RUN systemctl enable alsactl-watch.service
+
+# Set vm.max_map_count for stability/improved gaming performance
+# https://wiki.archlinux.org/title/Gaming#Increase_vm.max_map_count
+RUN echo -e "vm.max_map_count = 2147483642" > /etc/sysctl.d/80-gamecompatibility.conf
+
+
+# a cool theme
+RUN cd /tmp/ && git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde && chmod +x ./install.sh
 
 
 #
@@ -35,8 +43,6 @@ RUN rm -rf /lib/modules
 COPY --from=cachyos /lib/modules /lib/modules
 COPY --from=cachyos /usr/share/licenses/ /usr/share/licenses/
 
-# a cool theme
-RUN cd /tmp/ && git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde && chmod +x ./install.sh
 
 # finish
 ENV DRACUT_NO_XATTR=1
