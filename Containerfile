@@ -24,7 +24,7 @@ User=root\n\n\
 [Install]\n\
 WantedBy=multi-user.target\n" > /etc/systemd/system/alsactl-start.service
 # enable service
-RUN systemctl enable alsactl-statt.service
+RUN systemctl enable alsactl-start.service
 
 
 
