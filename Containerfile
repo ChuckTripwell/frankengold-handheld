@@ -9,7 +9,7 @@ FROM ghcr.io/ublue-os/bazzite-deck:latest
 #
 # audio fix
 #
-# Create the service
+# Create autostart service
 RUN printf "[Unit]\n\
 Description=ALSA restore watchdog\n\
 After=multi-user.target\n\n\
@@ -22,9 +22,31 @@ StartLimitBurst=5\n\
 StartLimitIntervalSec=60\n\
 User=root\n\n\
 [Install]\n\
-WantedBy=multi-user.target\n" > /etc/systemd/system/alsactl-watch.service
+WantedBy=multi-user.target\n" > /etc/systemd/system/alsactl-start.service
 # enable service
-RUN systemctl enable alsactl-watch.service
+RUN systemctl enable alsactl-statt.service
+
+
+
+
+
+RUN printf "[Unit]\n\
+Description=Run alsactl init on volume key press\n\
+After=multi-user.target\n\n\
+\[Service]\n\
+Type=simple\n\
+ExecStart=/bin/sh -c \"/usr/bin/libinput debug-events --device /dev/input/event5 | /usr/bin/awk '/KEY_VOLUME(UP|DOWN).*pressed/ { system(\\\"/usr/bin/alsactl init\\\") }'\"\n\
+Restart=always\n\
+User=root\n\n\
+\[Install]\n\
+WantedBy=multi-user.target\n" > /etc/systemd/system/alsactl-fix.service && \
+systemctl enable alsactl-fix.service
+
+
+
+
+
+
 
 # Set vm.max_map_count for stability/improved gaming performance
 # https://wiki.archlinux.org/title/Gaming#Increase_vm.max_map_count
@@ -32,7 +54,7 @@ RUN echo -e "vm.max_map_count = 2147483642" > /etc/sysctl.d/80-gamecompatibility
 
 
 # a cool theme
-RUN cd /tmp/ && git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde && chmod +x ./install.sh
+#RUN cd /tmp/ && git clone https://github.com/ChuckTripwell/Afterglow-kde && cd Afterglow-kde && chmod +x ./install.sh
 
 
 #
@@ -42,6 +64,8 @@ RUN sed -i -e s,countme=1,countme=0, /etc/yum.repos.d/*.repo && systemctl mask -
 RUN rm -rf /lib/modules
 COPY --from=cachyos /lib/modules /lib/modules
 COPY --from=cachyos /usr/share/licenses/ /usr/share/licenses/
+
+
 
 
 # finish
