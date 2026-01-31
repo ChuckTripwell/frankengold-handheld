@@ -21,6 +21,8 @@ RUN echo "DBX_CONTAINER_HOME_PREFIX=$HOME/distrobox" >> /usr/share/distrobox/dis
 # :::::: Set vm.max_map_count for stability/improved gaming performance :::::: 
 # :::::: https://wiki.archlinux.org/title/Gaming#Increase_vm.max_map_count :::::: 
 RUN echo -e "vm.max_map_count = 2147483642" > /etc/sysctl.d/80-gamecompatibility.conf
+RUN echo "vm.swappiness=10" >> /etc/sysctl.conf
+RUN echo "kernel.sched_migration_cost_ns=5000000" >> /etc/sysctl.conf
 
 # :::::: disable countme ( we always disable it anyway, so this  is to save us time. you can enable it if you want... ) :::::: 
 RUN sed -i -e s,countme=1,countme=0, /etc/yum.repos.d/*.repo && systemctl mask --now rpm-ostree-countme.timer
