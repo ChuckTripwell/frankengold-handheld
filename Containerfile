@@ -44,18 +44,18 @@ COPY --from=cachyos /usr/share/licenses/ /usr/share/licenses/
 # Create the steam-limiter script
 RUN mkdir -p /bin/scripts
 
-RUN tee -a /bin/scripts/steam-limiter.sh <<< '#!/bin/bash'
+RUN tee -a /bin/scripts/steam-limiter.sh <<< "#!/bin/bash"
 RUN tee -a /bin/scripts/steam-limiter.sh <<< 'CGROUP=/sys/fs/cgroup/steam_limit'
 RUN tee -a /bin/scripts/steam-limiter.sh <<< ''
-RUN tee -a /bin/scripts/steam-limiter.sh <<< '# Create cgroup if it doesn't exist'
+# Create cgroup if it doesn't exist
 RUN tee -a /bin/scripts/steam-limiter.sh <<< 'mkdir -p "$CGROUP"'
 RUN tee -a /bin/scripts/steam-limiter.sh <<< ''
-RUN tee -a /bin/scripts/steam-limiter.sh <<< '# Set memory limits'
+# Set memory limits
 RUN tee -a /bin/scripts/steam-limiter.sh <<< 'echo 1073741824 > "$CGROUP/memory.high"'
 RUN tee -a /bin/scripts/steam-limiter.sh <<< 'echo 1 > "$CGROUP/memory.low"'
 RUN tee -a /bin/scripts/steam-limiter.sh <<< 'echo 536870912 > "$CGROUP/memory.min"'
 RUN tee -a /bin/scripts/steam-limiter.sh <<< ''
-RUN tee -a /bin/scripts/steam-limiter.sh <<< '# Loop to attach Steam processes'
+# Loop to attach Steam processes
 RUN tee -a /bin/scripts/steam-limiter.sh <<< 'while true; do'
 RUN tee -a /bin/scripts/steam-limiter.sh <<< '    for PID in $(pidof steam 2>/dev/null || true); do'
 RUN tee -a /bin/scripts/steam-limiter.sh <<< '        echo $PID > "$CGROUP/cgroup.procs"'
