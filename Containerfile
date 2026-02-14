@@ -57,12 +57,12 @@ WantedBy=multi-user.target\n" > /etc/systemd/system/alsactl-start.service
 RUN printf "[Unit]\n\
 Description=Run alsactl init on volume key press\n\
 After=multi-user.target\n\n\
-\[Service]\n\
+[Service]\n\
 Type=simple\n\
 ExecStart=/bin/sh -c \"/usr/bin/libinput debug-events --device /dev/input/event5 | /usr/bin/awk '/KEY_VOLUME(UP|DOWN).*pressed/ { system(\\\"/usr/bin/alsactl init\\\") }'\"\n\
 Restart=always\n\
 User=root\n\n\
-\[Install]\n\
+[Install]\n\
 WantedBy=multi-user.target\n" > /etc/systemd/system/alsactl-fix.service
 
 RUN systemctl enable alsactl-fix.service
